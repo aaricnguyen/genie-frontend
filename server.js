@@ -12,51 +12,99 @@ app.use(cors())
 // current working directory
 
 
-app.get('/api/parser', async(req, res) => {
+app.get('/api/parser', (req, res) => {
 //   res.send('Hello World!')
       // do {
       // } while (fs.existsSync("D:/data/sample.json")===false);
-     
-     
-          exec(' java -jar D:/data/com-0.0.1-SNAPSHOT.jar', (error, stdout, stderr) => {
-            if (error) {
-              console.error(`exec error: ${error}`);
-              return;
-            }
-            console.log(`stdout: No. of directories = ${stdout}`);
-            if (stderr!= "")
-            console.error(`stderr: ${stderr}`);
-          });
+      // if (fs.existsSync('D:/data/sample.json')) {
+      //   console.log("exists")
+      // } else {
+      //   console.log("not found");
+      // }
+      fs.exists('D:/data/sample.json', (exists) => {
+        console.log("exists", exists)
+      })
+      // return new Promise((resolve, reject) => {
+      //   exec('java -jar D:/data/com-0.0.1-SNAPSHOT.jar', (error, stdout, stderr) => {
+      //     console.log("error", error);
+      //     console.log("stdout", stdout);
+      //     console.log("stderr", stderr);
+      //     if (error) {
+      //       console.error(`exec error: ${error}`);
+      //       reject(error);
+      //       return;
+      //     }
+      //     // console.log(`stdout: No. of directories = ${stdout}`);
+      //     if (stderr!= "") {
+      //       console.error(`stderr: ${stderr}`);
+      //       reject(stderr)
+      //       return;
+      //     }
+      //     resolve(stdout)
+      //   });
+      // })
+      
+
+//       setTimeout(() => {
+//         exec('java -jar D:/data/com-0.0.1-SNAPSHOT.jar', (error, stdout, stderr) => {
+//           if (error) {
+//             console.error(`exec error: ${error}`);
+//             return;
+//           }
+//           console.log(`stdout: No. of directories = ${stdout}`);
+//           if (stderr!= "")
+//           console.error(`stderr: ${stderr}`);
+// res.send("Success");
+
+//         });
+//       }, 3000);
+        
           
         
         
       
 
       
-res.send("Success");
 
 //   res.response(result)
  
 })
-app.get('/api/delete', async(req, res) => {
+app.delete('/api/delete', async(req, res) => {
   //   res.send('Hello World!')
-    if(fs.existsSync("D:/data/parser.py")){
-     fs.unlinkSync("D:/data/parser.py");
-    }
-    if(fs.existsSync("D:/data/sample.json")){
-       fs.unlinkSync("D:/data/sample.json");
-    }
-    if(!fs.existsSync("D:/data/parser.py") && !fs.existsSync("D:/data/sample.json")){
-      console.log("delete");
-      res.send("Success Delete");
-    }
+    // if(fs.existsSync("D:/data/parser.py")){
+    //  fs.unlinkSync("D:/data/parser.py");
+    // }
+    // if(fs.existsSync("D:/data/sample.json")){
+    //    fs.unlinkSync("D:/data/sample.json");
+    // }
+    // if(!fs.existsSync("D:/data/parser.py") && !fs.existsSync("D:/data/sample.json")){
+    //   console.log("delete");
+    //   res.send("Success Delete");
+    // }
    
-        
-  // res.send("Success Delete");
-  
-  //   res.response(result)
-   
-  })
+    var files = ['sample.json', 'parser.py'];
+    const patch = 'D:/data/'
+    
+      fs.unlink(`${patch}${files[0]}`, function(err) {
+        if(err && err.code == 'ENOENT') {
+          res.send(400, {message: `File doesn't exist`});
+        } else if (err) {
+          res.send(500, {message: `Error`});
+        } else {
+          fs.unlink(`${patch}${files[1]}`, function(err) {
+          if(err && err.code == 'ENOENT') {
+            res.send(400, {message: `File doesn't exist`});
+          } else if (err) {
+            res.send(500, {message: `Error`});
+          } else {
+            res.send(200, {message: `successful`});
+          }
+        });
+      }
+      })
+    
+
+});
 app.get('/api/python', (req, res) => {
 
     // do {

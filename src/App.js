@@ -46,29 +46,87 @@ function App() {
   }
   // const createJson = () =>{}
   const exportData = async (newData) => {
-      // deleteFile()
+    return await axios.delete('http://localhost:3005/api/delete').then((res) => {
+      if (res.status === 200) {
+        console.log("Delete successfully")
+        const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+          JSON.stringify(newData)
+        )}`;
+        const link = document.createElement("a");
+        link.href = jsonString;
+        link.download = "sample.json";
+
+        link.click();      
+      }
+    }).then(async () => {
+      console.log("IT'S WORKS");
+      const parsered = await axios.get('http://localhost:3005/api/parser');
+      console.log("parsered", parsered)
+    })
+    // const promise = new Promise((resolve,reject)=>{
+    //  axios.get('http://localhost:3005/api/delete').then((res)=>{
+    //   console.log(res);
+    //     resolve(res.status);
+    //   });
+    // })
+    
+    // const promise2 = new Promise((resolve,reject)=>{
+    //   axios.get('http://localhost:3005/api/parser').then((res)=>{
+    //     console.log("PROMISE 2")
+    //     resolve({status: res.status})
+    //   });
+    //  })
+    //  const promise3 = new Promise((resolve,reject)=>{
+    //   axios.get('http://localhost:3005/api/python').then((res)=>{
+    //     resolve({status :res.status, result:res.data})
+    //   });
+    //  })
+
+    // promise.then((data)=>{
+    // if(data === 200){
+    //   console.log("xoa dc roi");
+    //   const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
+    //     JSON.stringify(newData)
+    //   )}`;
+    //   const link = document.createElement("a");
+    //   link.href = jsonString;
+    //   link.download = "sample.json";
+  
+    //    link.click();
+    //    return promise2;
+    // }
  
+    // }).then((data)=>{
+    //   if(data === 200){
+    //     console.log("java ");
 
+    //      return promise3;
+    //   }
+    // })
+    // .then((data)=>{
+    //   if(data.status === 200){
+    //     console.log("python ");
 
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-      JSON.stringify(newData)
-    )}`;
-    const link = document.createElement("a");
-    link.href = jsonString;
-    link.download = "sample.json";
+    //       setPython(data.result)
+    //   }
+    // })
+    // deleteFile()
 
-     link.click();
+    // console.log("2");
+
+    
+ 
       
-     setTimeout(() => {
-     getJava();
+    //  setTimeout(() => {
+    //  getJava();
       
-     }, 1000);
+    //  }, 1000);
      
-     setPython("")
-     setTimeout(() => {
-     getPython();
+    //  setPython("")
+    //  setTimeout(() => {
+    //  getPython();
       
-     }, 3000);
+    //  }, 3000);
       
     
    
