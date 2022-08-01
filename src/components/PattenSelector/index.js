@@ -83,12 +83,16 @@ var range = selection.getRangeAt(0);
 var newNode = document.createElement("span");
 newNode.setAttribute("style", "background-color: pink;");
 range.surroundContents(newNode); 
+
+
+//   document.getSelection().addRange(ranges);
+// console.log(ranges); 
   };
   return (
     <>
       <h3>Pattern Selector</h3>
       <div
-        className="content"
+        className="content" id="p"
         style={{ width: "100%", height: "300px", overflow: "scroll" }}
         onMouseUp={(e) => {
           getSeclection(e);

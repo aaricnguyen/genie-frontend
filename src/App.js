@@ -46,7 +46,7 @@ function App() {
   }
   // const createJson = () =>{}
   const exportData = async (newData) => {
-    return await axios.delete('http://localhost:3005/api/delete').then((res) => {
+     await axios.delete('http://localhost:3005/api/delete').then((res) => {
       if (res.status === 200) {
         console.log("Delete successfully")
         const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
@@ -59,9 +59,17 @@ function App() {
         link.click();      
       }
     }).then(async () => {
+   axios.get('http://localhost:3005/api/check').then( async(res)=>{
+      if(res.data){
       console.log("IT'S WORKS");
-      const parsered = await axios.get('http://localhost:3005/api/parser');
-      console.log("parsered", parsered)
+        setPython('')
+        const parser = await axios.get("http://localhost:3005/api/parser");
+        const python = await axios.get("http://localhost:3005/api/python");
+        setPython(python.data)
+        console.log(parser);
+      }
+     });
+     
     })
     // const promise = new Promise((resolve,reject)=>{
     //  axios.get('http://localhost:3005/api/delete').then((res)=>{

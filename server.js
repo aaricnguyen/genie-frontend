@@ -11,6 +11,12 @@ app.use(cors())
 // Counts the number of directory in 
 // current working directory
 
+app.get('/api/check',(req,res)=>{
+  do {
+    
+  } while (fs.existsSync('D:/data/sample.json')===false);
+  res.send(fs.existsSync('D:/data/sample.json'));
+})
 
 app.get('/api/parser', (req, res) => {
 //   res.send('Hello World!')
@@ -21,9 +27,9 @@ app.get('/api/parser', (req, res) => {
       // } else {
       //   console.log("not found");
       // }
-      fs.exists('D:/data/sample.json', (exists) => {
-        console.log("exists", exists)
-      })
+      // fs.exists('D:/data/sample.json', (exists) => {
+      //   console.log("exists", exists)
+      // })
       // return new Promise((resolve, reject) => {
       //   exec('java -jar D:/data/com-0.0.1-SNAPSHOT.jar', (error, stdout, stderr) => {
       //     console.log("error", error);
@@ -46,17 +52,17 @@ app.get('/api/parser', (req, res) => {
       
 
 //       setTimeout(() => {
-//         exec('java -jar D:/data/com-0.0.1-SNAPSHOT.jar', (error, stdout, stderr) => {
-//           if (error) {
-//             console.error(`exec error: ${error}`);
-//             return;
-//           }
-//           console.log(`stdout: No. of directories = ${stdout}`);
-//           if (stderr!= "")
-//           console.error(`stderr: ${stderr}`);
-// res.send("Success");
+        exec('java -jar D:/data/com-0.0.1-SNAPSHOT.jar', (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          console.log(`stdout: No. of directories = ${stdout}`);
+          if (stderr!= "")
+          console.error(`stderr: ${stderr}`);
+res.send("Success");
 
-//         });
+        });
 //       }, 3000);
         
           
@@ -84,24 +90,30 @@ app.delete('/api/delete', async(req, res) => {
    
     var files = ['sample.json', 'parser.py'];
     const patch = 'D:/data/'
-    
-      fs.unlink(`${patch}${files[0]}`, function(err) {
-        if(err && err.code == 'ENOENT') {
-          res.send(400, {message: `File doesn't exist`});
-        } else if (err) {
-          res.send(500, {message: `Error`});
-        } else {
-          fs.unlink(`${patch}${files[1]}`, function(err) {
+      if(fs.existsSync('D:/data/sample.json')){
+        fs.unlink(`${patch}${files[0]}`, function(err) {
           if(err && err.code == 'ENOENT') {
+            console.log("not exist");
             res.send(400, {message: `File doesn't exist`});
           } else if (err) {
             res.send(500, {message: `Error`});
           } else {
-            res.send(200, {message: `successful`});
-          }
-        });
+            fs.unlink(`${patch}${files[1]}`, function(err) {
+            if(err && err.code == 'ENOENT') {
+              res.send(400, {message: `File doesn't exist`});
+            } else if (err) {
+              res.send(500, {message: `Error`});
+            } else {
+              res.send(200, {message: `successful`});
+            }
+          });
+        }
+        })
+      }else{
+        res.send(200, {message: `successful`});
+
       }
-      })
+  
     
 
 });
