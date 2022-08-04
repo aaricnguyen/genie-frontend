@@ -1,26 +1,31 @@
-import { useContext, useEffect, useState } from "react";
+import React, { useState, useContext, useEffect } from 'react';
 import { StoreContext } from "../../context";
 
-const PattenSelector = ({ text }) => {
+const FormInput = () => {
+  const myRef = React.createRef();
   const { data, setData } = useContext(StoreContext);
+  const [text, setText] = useState([]);
   const [html, setHtml] = useState("");
   const [count, setCount] = useState(0);
 
   useEffect(() => {
     let col = ""
     console.log(text)
-    text.map((val) => {
+    text.map((val) => (
       col += `<p>${val}</p>`
-    })
+    ))
     setHtml(col);
   }, [text]);
 
   const getSeclection = () => {
+    // let textVal = myRef.current;
+    // console.log("textVal", textVal)
     var lines =
       text.findIndex(
         (val) => val.includes(window.getSelection().focusNode.nodeValue)
       ) + 1;
-      console.log(window.getSelection().focusNode.nodeValue);
+      // console.log("row", window.getSelection().focusNode.nodeValue);
+      // console.log("row", window.getSelection());
       
     if(window.getSelection().toString() !== "") {
       setCount(count +1);
@@ -60,20 +65,24 @@ const PattenSelector = ({ text }) => {
     newNode.setAttribute("style", "background-color: pink;");
     range.surroundContents(newNode); 
   };
+
+  const handleChange = (e) => {
+    console.log(e.currentTarget.textContent)
+    const { textContent } = e.currentTarget;
+    let splitArray = textContent.split("\n");
+    setText(splitArray);
+  };
   return (
-    <>
-      <h3>Pattern Selector</h3>
-      <div
-        className="content" id="p"
-        style={{ width: "100%", height: "300px", overflow: "scroll" }}
-        onMouseUp={(e) => {
-          getSeclection(e);
-        }}
-        dangerouslySetInnerHTML={{ __html: `<pre>${html}</pre>` }}
-      >
-      {console.log(data)}
-      </div>
-    </>
-  );
-};
-export default PattenSelector;
+    <div
+      contentEditable="true"
+      onInput={(e) => handleChange(e)}
+      ref={myRef}
+      value={text}
+      style={{ width: "100%", height: "300px", border: '1px solid black', overflow: "scroll" }}
+      onMouseUp={(e) => {getSeclection(e)}}
+      dangerouslySetInnerHTML={{ __html: `<pre>${html}</pre>` }}
+    ></div>
+  )
+}
+
+export default FormInput;
