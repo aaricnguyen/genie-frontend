@@ -1,8 +1,8 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { StoreContext } from "../../context";
 
 const FormInput = () => {
-  const myRef = React.createRef();
+  const textRef = useRef(null);
   const { data, setData } = useContext(StoreContext);
   const [text, setText] = useState([]);
   const [html, setHtml] = useState("");
@@ -18,17 +18,14 @@ const FormInput = () => {
   }, [text]);
 
   const getSeclection = () => {
-    // let textVal = myRef.current;
-    // console.log("textVal", textVal)
     var lines =
       text.findIndex(
-        (val) => val.includes(window.getSelection().focusNode.nodeValue)
+        (val) => val.includes(window.getSelection().toString())
       ) + 1;
-      // console.log("row", window.getSelection().focusNode.nodeValue);
-      // console.log("row", window.getSelection());
+      console.log("row", window.getSelection().toString());
       
     if(window.getSelection().toString() !== "") {
-      setCount(count +1);
+      setCount(count + 1);
       let start = window.getSelection().anchorOffset;
       let end = window.getSelection().focusOffset - 1;
 
@@ -43,7 +40,7 @@ const FormInput = () => {
             lineNum: lines,
             selections: [
               {
-                name:String.fromCharCode(65+count),
+                name:String.fromCharCode(65 + count),
                 value: window.getSelection().toString(),
                 start: start,
                 end: end,
@@ -67,21 +64,23 @@ const FormInput = () => {
   };
 
   const handleChange = (e) => {
-    console.log(e.currentTarget.textContent)
     const { textContent } = e.currentTarget;
     let splitArray = textContent.split("\n");
     setText(splitArray);
   };
+  
   return (
-    <div
-      contentEditable="true"
-      onInput={(e) => handleChange(e)}
-      ref={myRef}
-      value={text}
-      style={{ width: "100%", height: "300px", border: '1px solid black', overflow: "scroll" }}
-      onMouseUp={(e) => {getSeclection(e)}}
-      dangerouslySetInnerHTML={{ __html: `<pre>${html}</pre>` }}
-    ></div>
+    <>
+      <pre
+        id="editable"
+        contentEditable="true"
+        ref={textRef}
+        onInput={(e) => handleChange(e)}
+        style={{ width: "100%", height: "634px", border: '1px solid black', overflowY: "scroll", outline: 'none' }}
+        onMouseUp={(e) => {getSeclection(e)}}
+      >
+      </pre>
+    </>
   )
 }
 

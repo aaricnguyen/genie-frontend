@@ -50,12 +50,12 @@ export default function Highlight({ json = "",python ="" }) {
     // </span>
     <>
       <div className="json" style={{ width: "100%", height: "100%" }}>
-        <h3>Json</h3>
-        <textarea className="export-json" value={json} style={{height:'300px'}}></textarea>
+        <h2 className="json-title">Json</h2>
+        <textarea className="export-json" value={json} style={{height:'300px', resize: 'none', outline: 'none'}}></textarea>
       </div>
       <div className="python-code" style={{ width: "100%", height: "100%" }}>
-        <h3>Python Code</h3>
-        <textarea className="export-python" value={python} style={{height:'300px'}}></textarea>
+        <h2 className="python-title">Python Code</h2>
+        <textarea className="export-python" value={python} style={{height:'300px', resize: 'none', outline: 'none'}}></textarea>
       </div>
     </>
   );
