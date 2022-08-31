@@ -1,0 +1,55 @@
+.controlsSection {
+  border: 1px solid #fff;
+  border-radius: 10px;
+  padding: 20px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.CLICommandForm {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.formControl {
+  width: 500px;
+  min-height: 38px;
+  padding: 0 10px;
+  outline: none;
+  border-radius: 5px;
+  border: 1px solid #000000;
+}
+.regexSection {
+  display: flex;
+  align-items: center;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.regexLeft {
+  position: relative;
+  width: 50%;
+  margin-right: 10px;
+}
+.cliOutput {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.regexLeftTitle {
+  font-size: 15px;
+  color: #344f71;
+  margin-bottom: 10px;
+  /* background: #fff;
+  letter-spacing: 0.5px;
+  position: absolute;
+  top: 0;
+  left: 10px;
+  transform: translateY(-50%);
+  user-select: none; */
+}
+.regexRight {
+  width: 50%;
+  margin-left: 10px;
+}

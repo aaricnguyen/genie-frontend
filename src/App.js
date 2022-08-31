@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import Highlight from "./components/Highlight";
-import PattenSelector from "./components/PattenSelector";
 import axios from "axios";
 import { StoreContext } from "./context.js";
+import Highlight from "./components/Highlight";
+import PattenSelector from "./components/PattenSelector";
 import FormInput from './components/FormInput';
+
+import styles from './App.module.css';
 
 function App() {
   const [highlight, setHighlight] = useState("");
@@ -13,7 +15,8 @@ function App() {
   const [python, setPython] = useState("");
   const myRef = React.createRef()
 
-  const format = (test) => {
+  const format = (e, test) => {
+    e.preventDefault();
     console.log(test);
     let lines = test.map((item) => item.lineNum);
 
@@ -123,16 +126,27 @@ function App() {
   return (
     <StoreContext.Provider value={{ data, setData, json, setJson }}>
       <div className="wrapper">
-        <section className="regex-section">
-          <div className="regex-left" style={{ width: "50%" }}>
-            <h2 className="regex-left-title">Test String</h2>
-            <FormInput />
+        <section className={styles.controlsSection}>
+          <form className={styles.CLICommandForm}>
+            <div className={styles.formGroup}>
+              <input type="text" placeholder="CLI command" className={styles.formControl} />
+            </div>
+            <button className="btn-export" onClick={(e) => format(e, data)}>Generate</button>
+            <button className="btn-export">Test</button>
+          </form>
+        </section>
+        <section className={styles.regexSection}>
+          <div className={styles.regexLeft}>
+            <div className={styles.cliOutput}>
+              <h2 className={styles.regexLeftTitle}>CLI Output</h2>
+              <FormInput />
+            </div>
+            <div className="json" style={{ width: "100%", height: "100%" }}>
+              <h2 className="json-title">JSON</h2>
+              <textarea className="export-json" value={json} style={{height:'300px', resize: 'none', outline: 'none'}}></textarea>
+            </div>
           </div>
-          <div className="export" style={{ padding: "0 20px" }}>
-            <button onClick={() => format(data)} className="btn-export">Export</button>
-            {/* <input type="file" onChange={(e) => showFile(e)} /> */}
-          </div>
-          <div className="regex-right" style={{ width: "50%" }}>
+          <div className={styles.regexRight}>
             <Highlight json={json} python={python} />
           </div>
         </section>

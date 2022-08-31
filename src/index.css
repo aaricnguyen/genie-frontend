@@ -39,18 +39,13 @@ textarea{
   width: 1280px;
   margin: 0 auto;
 }
-.regex-section {
-  padding: 30px 0;
-  display: flex;
-  align-items: center;
-}
 .regex-left-title, .json-title, .python-title {
   font-size: 15px;
   color: #344f71;
   margin-bottom: 10px;
 }
 .btn-export {
-  background: #2c5c97;
+  background: #0076D5;
   width: 80px;
   height: 40px;
   display: flex;
@@ -62,5 +57,26 @@ textarea{
   transition: all .5s ease;
 }
 .btn-export:hover {
-  opacity: 0.8;
+  background: #0353A8;
+}
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #0076d5 #ffffff;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #0076d5;
+  border-radius: 10px;
+  border: 3px solid #ffffff;
 }

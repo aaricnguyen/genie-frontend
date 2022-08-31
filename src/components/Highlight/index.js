@@ -1,62 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
-export default function Highlight({ json = "",python ="" }) {
-  // const match = text.split("\n");
+import styles from './styles.module.css';
 
-  /* Start handle search highlight */
-  // if (!highlight.trim()) {
-  //   return <span>{text}</span>;
-  // }
-
-  // const regex = new RegExp(`(${highlight})`, "gi");
-  // const parts = text.split(regex);
-  /* End handle search highlight */
-
-  /* Start handle hover */
-  // const handleHover = (i, part) => {
-  //   console.log("i", i)
-  //   // const startPos = text.indexOf(part)
-  //   // console.log("POS", `${startPos} - ${startPos + highlight.length - 1}`)
-  //   const res = getMultipleIndexOf(text, part);
-  //   console.log("result", res)
-  // }
-  /* End handle hover */
-
-  /* Start handle search position */
-  // const getMultipleIndexOf = (text, highlight, acc = 0, result = []) => {
-  //   const foundIndex = text.toLowerCase().indexOf(highlight.toLowerCase());
-  //   if (foundIndex < 0) {
-  //     return { result, acc }
-  //   }
-  //   return getMultipleIndexOf(
-  //     text.slice(foundIndex + highlight.length),
-  //     highlight,
-  //     acc + foundIndex + highlight.length,
-  //     [...result, acc + foundIndex]
-  //   )
-  // }
-  /* End handle search position */
-
+const Highlight = ({ json = "", python = "" }) => {
   return (
-    // <span>
-    //   {parts.filter(String).map((part, i) => {
-    //     return regex.test(part) ? (
-    //       <mark key={i} onMouseOver={() => handleHover(i, part)}>{part}</mark>
-    //     ) : (
-    //       <span key={i}>{part}</span>
-    //     );
-    //   })}
-
-    // </span>
     <>
-      <div className="json" style={{ width: "100%", height: "100%" }}>
-        <h2 className="json-title">Json</h2>
-        <textarea className="export-json" value={json} style={{height:'300px', resize: 'none', outline: 'none'}}></textarea>
+      <div className={styles.parserCode}>
+        <h2 className={styles.parserTitle}>Parser code (Auto generated)</h2>
+        <textarea className={styles.parserOutput} value={python}></textarea>
       </div>
-      <div className="python-code" style={{ width: "100%", height: "100%" }}>
-        <h2 className="python-title">Python Code</h2>
-        <textarea className="export-python" value={python} style={{height:'300px', resize: 'none', outline: 'none'}}></textarea>
+      <div className={styles.testParser}>
+        <h2 className={styles.testTitle}>Test parser output</h2>
+        <textarea className={styles.testOutput}></textarea>
       </div>
     </>
   );
 }
+
+export default Highlight;
