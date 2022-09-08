@@ -11,6 +11,7 @@ function App() {
   const [highlight, setHighlight] = useState("");
   const [text, setText] = useState([]);
   const [json, setJson] = useState([]);
+  const [isBlock, setIsBlock] = useState(false);
   const [data, setData] = useState([]);
   const [python, setPython] = useState("");
   const myRef = React.createRef()

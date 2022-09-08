@@ -31,18 +31,49 @@ const FormInput = () => {
     setHtml(col);
   }, [text]);
 
+  const handleLineNumBlock = (blocks) => {
+    let indexArr = [];
+    for (let i = 0; i < text.length; i++) {
+      for (let j = 0; j < blocks.length; j++) {
+        if (text[i].includes(blocks[j])) {
+          indexArr.push(i);
+        }
+      }
+    }
+    return indexArr;
+  }
+
   const getSeclection = () => {
-    var lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
-    // console.log("row", window.getSelection());
-      
+    let blocks = [];
+    let lineNumStart;
+    let lineNumEnd;
+    let lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
+
     if(window.getSelection().toString() !== "") {
+      if (window.getSelection) {
+        let selectionRange = window.getSelection();
+        if (selectionRange.rangeCount > 0) {
+          let range = selectionRange.getRangeAt(0);
+          let docFragment = range.cloneContents();
+          let tmpDiv = document.createElement("div");
+          tmpDiv.appendChild(docFragment);
+          let selHTML = tmpDiv.textContent;
+          let splitArray = selHTML.split("\n");
+          blocks = splitArray;
+          const indexArr = handleLineNumBlock(blocks);
+          lineNumStart = indexArr.shift() + 1;
+          lineNumEnd = indexArr.pop() + 1;
+          console.log("lineNumStart: ", lineNumStart);
+          console.log("lineNumEnd: ", lineNumEnd)
+        }
+      }
       setCount(count + 1);
       let start = window.getSelection().anchorOffset;
       let end = window.getSelection().focusOffset - 1;
 
       if(start > end) {
         start = window.getSelection().focusOffset;
-        end = window.getSelection().anchorOffset-1;
+        end = window.getSelection().anchorOffset - 1;
       }
       setData((prev) => {
         return [
@@ -59,21 +90,29 @@ const FormInput = () => {
                 type: "",
                 regex: "",
                 description: "",
+                optional: "no",
+                ignore: "no",
+                isBlock: blocks.length > 1 ? true : false,
               },
             ],
           },
         ];
       });
 
-      hightlightText(); 
+      hightlightText(blocks); 
     }
   };
-  const hightlightText = () => {
+  const hightlightText = (blocks) => {
     var selection = window.getSelection();
     var range = selection.getRangeAt(0);
     var newNode = document.createElement("span");
-    newNode.setAttribute("style", "background-color: pink;");
-    newNode.classList.add("highlight");
+    if (blocks.length > 1) {
+      newNode.setAttribute("style", "background-color: #fce0e5;");
+      newNode.classList.add("block");
+    } else {
+      newNode.setAttribute("style", "background-color: pink;");
+      newNode.classList.add("highlight");
+    }
     range.surroundContents(newNode); 
   };
 
@@ -93,8 +132,8 @@ const FormInput = () => {
 
     if (className === 'highlight') {
       Object.assign(elPopup.style, {
-        left: `${offsetLeft + 10}px`,
-        top: `${offsetTop + 15}px`,
+        left: `${offsetLeft + 5}px`,
+        top: `${offsetTop - 60}px`,
         display: `block`
       });
       let results = data.map((dt) => {
@@ -109,7 +148,7 @@ const FormInput = () => {
     } else {
       Object.assign(elPopup.style, {
         display: `none`
-      })
+      });
     }
   }
 
