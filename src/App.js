@@ -20,29 +20,69 @@ function App() {
     e.preventDefault();
     console.log(test);
     let lines = test.map((item) => item.lineNum);
+    let blocks = test.filter((item) => item.isBlock === true);
+
+    console.log("BLOCKS: ", blocks);
+
+    let startLines = blocks.map((item) => item.lineStart);
+    let endLines = blocks.map((item) => item.lineEnd);
 
     let uniqueLines = [...new Set(lines)];
 
     let newTest = [];
+    if (blocks.length > 0) {
+      startLines.forEach((item, index) => {
+        newTest.push({
+          lineStart: item,
+          lineEnd: endLines[index],
+          isBlock: true,
+          dictionary: []
+        })
+      })
+    } 
+    
     uniqueLines.forEach((item) => {
-      newTest.push({
-        lineNum: item,
-        selections: [],
-      });
+      if (item !== undefined) {
+        newTest.push({
+          lineNum: item,
+          selections: [],
+        });
+      }
     });
+
+    console.log("newTest: ", newTest)
 
     test.forEach((item) => {
       newTest.forEach((ele) => {
-        if (item.lineNum === ele.lineNum) {
+        if (item.lineNum === ele.lineNum && item.isBlock === undefined) {
           ele.selections.push(item.selections);
         }
       });
     });
 
-    newTest.forEach((items) => {
-      let newItem = items.selections.flat(2);
-      items.selections = newItem;
-    });
+    test.forEach((item) => {
+      newTest.forEach((ele) => {
+        if (ele.isBlock !== undefined) {
+          
+        }
+      })
+    })
+
+    // newTest.forEach((items) => {
+    //   if (items.isBlock !== undefined) {
+    //     let newItem = items.dictionary.flat(2);
+    //     items.dictionary = newItem;
+    //   } else {
+    //     let newItem = items.selections.flat(2);
+    //     items.selections = newItem;
+    //   }
+    // });
+
+    // newTest.forEach((items) => {
+    //   let newItem = items.selections.flat(2);
+    //   items.selections = newItem;
+    // })
+
     setJson(JSON.stringify(newTest));
     exportData(newTest);
   };

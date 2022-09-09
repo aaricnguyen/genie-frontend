@@ -45,8 +45,8 @@ const FormInput = () => {
 
   const getSeclection = () => {
     let blocks = [];
-    let lineNumStart;
-    let lineNumEnd;
+    let lineNumStart = 0;
+    let lineNumEnd = 0;
     let lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
 
     if(window.getSelection().toString() !== "") {
@@ -60,11 +60,11 @@ const FormInput = () => {
           let selHTML = tmpDiv.textContent;
           let splitArray = selHTML.split("\n");
           blocks = splitArray;
-          const indexArr = handleLineNumBlock(blocks);
-          lineNumStart = indexArr.shift() + 1;
-          lineNumEnd = indexArr.pop() + 1;
-          console.log("lineNumStart: ", lineNumStart);
-          console.log("lineNumEnd: ", lineNumEnd)
+          if (blocks.length > 1) {
+            const indexArr = handleLineNumBlock(blocks);
+            lineNumStart = indexArr.shift() + 1;
+            lineNumEnd = indexArr.pop() + 1;
+          }
         }
       }
       setCount(count + 1);
@@ -76,6 +76,35 @@ const FormInput = () => {
         end = window.getSelection().anchorOffset - 1;
       }
       setData((prev) => {
+        if (blocks.length > 1) {
+          return [
+            ...prev,
+            {
+              lineStart: lineNumStart,
+              lineEnd: lineNumEnd,
+              isBlock: true,
+              dictionary: [
+                {
+                  lineNum: lines,
+                  selections: [
+                    {
+                      id: uniqueId('myprefix-'),
+                      name:String.fromCharCode(65 + count),
+                      value: window.getSelection().toString(),
+                      start: start,
+                      end: end,
+                      type: "",
+                      regex: "",
+                      description: "",
+                      optional: "no",
+                      ignore: "no"
+                    },
+                  ],
+                },
+              ],
+            },
+          ];
+        }
         return [
           ...prev,
           {
@@ -91,8 +120,7 @@ const FormInput = () => {
                 regex: "",
                 description: "",
                 optional: "no",
-                ignore: "no",
-                isBlock: blocks.length > 1 ? true : false,
+                ignore: "no"
               },
             ],
           },
@@ -133,14 +161,16 @@ const FormInput = () => {
     if (className === 'highlight') {
       Object.assign(elPopup.style, {
         left: `${offsetLeft + 5}px`,
-        top: `${offsetTop - 60}px`,
+        top: `${offsetTop + 10}px`,
         display: `block`
       });
       let results = data.map((dt) => {
-        const { selections } = dt;
-        return (
-          selections.find((item) => item.value.includes(innerText))
-        )
+        if (dt.isBlock === undefined) {
+          const { selections } = dt;
+          return (
+            selections.find((item) => item.value.includes(innerText))
+          )
+        }
       });
       let newArray = results.filter((result) => result !== undefined);
       setInfoPopup({lineNum, ...newArray[0]});
