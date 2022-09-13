@@ -1,8 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { StoreContext } from "./context.js";
 import Highlight from "./components/Highlight";
-import PattenSelector from "./components/PattenSelector";
 import FormInput from './components/FormInput';
 
 import styles from './App.module.css';
@@ -11,7 +10,7 @@ function App() {
   const [highlight, setHighlight] = useState("");
   const [text, setText] = useState([]);
   const [json, setJson] = useState([]);
-  const [isBlock, setIsBlock] = useState(false);
+  const [group, setGroup] = useState([]);
   const [data, setData] = useState([]);
   const [python, setPython] = useState("");
   const myRef = React.createRef()
@@ -21,8 +20,6 @@ function App() {
     console.log(test);
     let lines = test.map((item) => item.lineNum);
     let blocks = test.filter((item) => item.isBlock === true);
-
-    console.log("BLOCKS: ", blocks);
 
     let startLines = blocks.map((item) => item.lineStart);
     let endLines = blocks.map((item) => item.lineEnd);
@@ -50,23 +47,50 @@ function App() {
       }
     });
 
-    console.log("newTest: ", newTest)
+    // console.log("newTest: ", newTest)
+
+    // test.forEach((item) => {
+    //   newTest.forEach((ele) => {
+    //     if (item.lineNum === ele.lineNum && item.isBlock === undefined) {
+    //       ele.selections.push(item.selections);
+    //     }
+    //   });
+    // });
 
     test.forEach((item) => {
       newTest.forEach((ele) => {
         if (item.lineNum === ele.lineNum && item.isBlock === undefined) {
           ele.selections.push(item.selections);
         }
-      });
-    });
-
-    test.forEach((item) => {
+      })
+    })
+    test.forEach((item, index) => {
       newTest.forEach((ele) => {
-        if (ele.isBlock !== undefined) {
-          
+        if ((ele.lineStart <= item.lineNum && ele.lineEnd >= item.lineNum) && ele.isBlock === true) {
+          if (checkString(item.selections[0].value)) {
+            ele.dictionary.push(item);
+            delete newTest[index];
+          }
         }
       })
     })
+
+    let temp = newTest.filter((el) => {
+      return el !== null
+    })
+    newTest = temp;
+
+    // test.forEach((item) => {
+    //   newTest.forEach((ele) => {
+    //     if (ele.isBlock !== undefined) {
+    //       if (item.lineStart <= ele.lineNum && item.lineEnd >= ele.lineNum) {
+    //         console.log("dictionary: ", ele.dictionary);
+    //         let newItem = ele.dictionary.flat(2);
+    //         console.log("newItem: ", newItem);
+    //       }            
+    //     }
+    //   })
+    // })
 
     // newTest.forEach((items) => {
     //   if (items.isBlock !== undefined) {
@@ -78,10 +102,12 @@ function App() {
     //   }
     // });
 
-    // newTest.forEach((items) => {
-    //   let newItem = items.selections.flat(2);
-    //   items.selections = newItem;
-    // })
+    newTest.forEach((items) => {
+      if (items.isBlock === undefined) {
+        let newItem = items.selections.flat(2);
+        items.selections = newItem;
+      }
+    })
 
     setJson(JSON.stringify(newTest));
     exportData(newTest);
@@ -89,6 +115,10 @@ function App() {
 
   function name(params) {
     return deleteFile()
+  }
+
+  const checkString = (str) => {
+    return group.some(val => val.includes(str))
   }
 
   const exportData = async (newData) => {
@@ -165,7 +195,7 @@ function App() {
   }
 
   return (
-    <StoreContext.Provider value={{ data, setData, json, setJson }}>
+    <StoreContext.Provider value={{ data, setData, json, setJson, group, setGroup }}>
       <div className="wrapper">
         <section className={styles.controlsSection}>
           <form className={styles.CLICommandForm}>

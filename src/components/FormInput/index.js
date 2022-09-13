@@ -8,6 +8,7 @@ import styles from './style.module.css'
 const FormInput = () => {
   const textRef = useRef(null);
   const { data, setData } = useContext(StoreContext);
+  const { group, setGroup } = useContext(StoreContext);
   const [text, setText] = useState([]);
   const [html, setHtml] = useState("");
   const [count, setCount] = useState(0);
@@ -16,7 +17,7 @@ const FormInput = () => {
   const [values, setValues] = useState({
     type: 'One Word',
     regex: '',
-    description: ''
+    desc: ''
   })
 
   const el = (sel, par) => (par || document).querySelector(sel);
@@ -61,6 +62,7 @@ const FormInput = () => {
           let splitArray = selHTML.split("\n");
           blocks = splitArray;
           if (blocks.length > 1) {
+            setGroup((prev) => [...prev, window.getSelection().toString()]);
             const indexArr = handleLineNumBlock(blocks);
             lineNumStart = indexArr.shift() + 1;
             lineNumEnd = indexArr.pop() + 1;
@@ -95,7 +97,8 @@ const FormInput = () => {
                       end: end,
                       type: "",
                       regex: "",
-                      description: "",
+                      desc: "",
+                      group: "",
                       optional: "no",
                       ignore: "no"
                     },
@@ -118,7 +121,8 @@ const FormInput = () => {
                 end: end,
                 type: "",
                 regex: "",
-                description: "",
+                desc: "",
+                group: "",
                 optional: "no",
                 ignore: "no"
               },

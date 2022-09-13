@@ -50,9 +50,9 @@ const Tooltip = ({ info = {}, handleChangePopup = () => {}, values }) => {
               <input 
                 type="text" 
                 placeholder=" "
-                name="description" 
+                name="desc" 
                 id={id} 
-                value={values.description} 
+                value={values.desc} 
                 onChange={(e) => handleChangePopup(e, lineNum)} 
                 className={styles.formControl} 
               />
