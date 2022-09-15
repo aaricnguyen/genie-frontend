@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from './styles.module.css';
 
-const Highlight = ({ json = "", python = "" }) => {
+const Highlight = ({ json = "", python = "",testParser="" }) => {
   return (
     <>
       <div className={styles.parserCode}>
@@ -11,7 +11,7 @@ const Highlight = ({ json = "", python = "" }) => {
       </div>
       <div className={styles.testParser}>
         <h2 className={styles.testTitle}>Test parser output</h2>
-        <textarea className={styles.testOutput}></textarea>
+        <textarea className={styles.testOutput} value={testParser}></textarea>
       </div>
     </>
   );
