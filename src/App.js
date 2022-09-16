@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { uniqBy } from 'lodash';
 import { StoreContext } from "./context.js";
 import Highlight from "./components/Highlight";
 import FormInput from "./components/FormInput";
@@ -28,6 +29,12 @@ function App() {
     let endLines = blocks.map((item) => item.lineEnd);
 
     let uniqueLines = [...new Set(lines)];
+
+    let uniqueSelections = [...new Set(test)];
+
+    console.log("uniqueSelections: ", uniqueSelections)
+
+    console.log("data test: ", test)
 
     let newTest = [];
     if (blocks.length > 0) {
@@ -63,10 +70,20 @@ function App() {
     test.forEach((item) => {
       newTest.forEach((ele) => {
         if (item.lineNum === ele.lineNum && item.isBlock === undefined) {
-          ele.selections.push(item.selections);
+          let flag = false;
+          ele.selections.forEach((sel) => {
+            if (ele.start === sel.start) {
+              flag = true;
+              return;
+            }
+          })
+          if (flag === false) {
+            ele.selections.push(item.selections);
+          }
         }
       });
     });
+
     test.forEach((item, index) => {
       newTest.forEach((ele) => {
         if (

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { uniqueId } from "lodash";
+import { uniqueId, forEach } from "lodash";
 import { StoreContext } from "../../context";
 import Tooltip from "../Tooltip";
 
@@ -43,6 +43,7 @@ const FormInput = () => {
     }
     return indexArr;
   };
+
 
   const getSeclection = () => {
     let blocks = [];
@@ -90,6 +91,8 @@ const FormInput = () => {
       //   start = window.getSelection().focusOffset;
       //   end = window.getSelection().anchorOffset - 1;
       // }
+
+      
       setData((prev) => {
         if (blocks.length > 1) {
           return [
@@ -128,7 +131,7 @@ const FormInput = () => {
             selections: [
               {
                 id: uniqueId("myprefix-"),
-                name: String.fromCharCode(65 + count),
+                name: `Sel-${Math.floor(1000 + Math.random() * 9000)}`,
                 value: window.getSelection().toString(),
                 start: start,
                 end: end,
@@ -142,6 +145,9 @@ const FormInput = () => {
             ],
           },
         ];
+        
+
+        
       });
 
       hightlightText(blocks);
