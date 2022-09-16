@@ -193,11 +193,14 @@ const FormInput = () => {
       x: e.clientX + offsetLeft,
       y: e.clientY + offsetTop,
     });
-
+    console.log("offsetLeft: ", offsetLeft)
+    console.log("offsetTop: ", offsetTop)
+    console.log("clientY", document.getElementById('editable').clientY)
+    console.log("clientTop", document.getElementById('editable').clientTop)
     if (className === "highlight") {
       Object.assign(elPopup.style, {
         left: `${offsetLeft + 5}px`,
-        top: `${offsetTop + 10}px`,
+        top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y + 35}px`,
         display: `block`,
       });
       let results = data.map((dt) => {
@@ -215,19 +218,31 @@ const FormInput = () => {
       });
     }
   };
+  
 
   const handleChangePopup = (e, lineNum) => {
     const { name, value, id } = e.target;
+    console.log("id: ", id)
     setData((prev) => {
       let indexSelection;
-      let index = prev.findIndex((dt) => dt.lineNum === lineNum);
-      indexSelection = prev[index].selections.findIndex((selection) =>
-        selection.id.includes(id)
-      );
-      prev[index].selections[indexSelection] = {
-        ...prev[index].selections[indexSelection],
-        [name]: value,
-      };
+      let idx;
+      // let index = prev.findIndex((dt) => dt.lineNum === lineNum);
+      // indexSelection = prev[index].selections.findIndex((selection) =>
+      //   selection.id.includes(id)
+      // );
+      // prev[index].selections[indexSelection] = {
+      //   ...prev[index].selections[indexSelection],
+      //   [name]: value,
+      // };
+      prev.forEach((dt, index) => {
+        if (dt.lineNum === lineNum && dt.selections[0].id === id) {
+          idx = index;
+        }
+      })
+      prev[idx].selections[0] = {
+        ...prev[idx].selections[0],
+        [name]: value
+      }
       return prev;
     });
     setValues({

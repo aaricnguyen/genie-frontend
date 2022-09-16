@@ -22,6 +22,7 @@ function App() {
   const format = (e, test) => {
     e.preventDefault();
     console.log(text);
+    console.log("data: ", data);
     let lines = test.map((item) => item.lineNum);
     let blocks = test.filter((item) => item.isBlock === true);
 
@@ -66,20 +67,32 @@ function App() {
     //     }
     //   });
     // });
-
-    test.forEach((item) => {
-      newTest.forEach((ele) => {
+    newTest.forEach((ele) => {
+      // let newSelections = []
+      let addedNames = []
+      test.forEach((item) => {
         if (item.lineNum === ele.lineNum && item.isBlock === undefined) {
-          let flag = false;
-          ele.selections.forEach((sel) => {
-            if (ele.start === sel.start) {
-              flag = true;
-              return;
-            }
+          
+          if (ele.selections.length === 0) {
+            ele.selections.push(item.selections);
+            // newSelections.push(item.selections);
+            addedNames.push(item.selections[0].name)
+          }
+          else {
+            let flag = false;
+            ele.selections?.forEach((sel) => {
+              if (item.selections[0].start === sel[0].start || addedNames.includes(item.selections[0].name)) {
+                flag = true;
+              }
+              
           })
           if (flag === false) {
             ele.selections.push(item.selections);
+            // newSelections.push(item.selections);
+            addedNames.push(item.selections[0].name)
           }
+          }
+          // ele.selections.push(item.selections);
         }
       });
     });
