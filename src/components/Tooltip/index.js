@@ -78,6 +78,20 @@ const Tooltip = ({ info = {}, handleChangePopup = () => {}, values }) => {
             </div>
           </div>
           <div className={styles.formGroup}>
+            <div className={styles.inputField}>
+              <input 
+                type="text" 
+                placeholder=" "
+                name="group" 
+                id={id} 
+                value={values.group} 
+                onChange={(e) => handleChangePopup(e, lineNum)} 
+                className={styles.formControl} 
+              />
+              <label className={styles.formLabel}>Group</label>
+            </div>
+          </div>
+          <div className={styles.formGroup}>
             <select className={styles.selectField} value={values.optional} name="optional" id={id} onChange={(e) => handleChangePopup(e, lineNum)}>
               <option value="yes">Yes</option>
               <option value="no">No</option>
