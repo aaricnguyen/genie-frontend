@@ -80,7 +80,7 @@ const FormInput = () => {
         start = window.getSelection().focusOffset;
         end = window.getSelection().anchorOffset - 1;
       } else {
-        start = text[lines - 1].indexOf(getSelection()) + 1;
+        start = text[lines - 1].indexOf(getSelection());
         end = start + window.getSelection().toString().length - 1;
       }
       

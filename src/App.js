@@ -160,7 +160,7 @@ function App() {
     formData.append("json_output_file", cliJson, "showversion.json");
     formData.append("cli_output_file", cliText, "showversion.txt");
 
-     axios({
+    axios({
         url: "http://10.78.96.78:5001/api/test?cli_command=show version",
         method: "POST",
         // headers: {
@@ -169,9 +169,9 @@ function App() {
         // },
         data: formData,
       }).then((res)=>{
-        console.log(res);
+        console.log(res.data);
         setTestParser(JSON.stringify(res.data))
-      });
+      })
     
  
   };
