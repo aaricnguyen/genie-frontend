@@ -278,12 +278,12 @@ function App() {
     }
   }
 
-  // const handleChange = (e) => {
-  //   console.log(e.target.value);
-  //   const { value } = e.target;
-  //   let splitArray = value.split("\n");
-  //   setText(splitArray);
-  // };
+  const handleChange = (e) => {
+    console.log(e.target.value);
+    const { value } = e.target;
+    let splitArray = value.split("\n");
+    setText(splitArray);
+  };
 
   const showFile = async (e) => {
     e.preventDefault();

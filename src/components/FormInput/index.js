@@ -6,7 +6,7 @@ import Tooltip from "../Tooltip";
 import styles from "./style.module.css";
 
 const FormInput = () => {
-  const textRef = useRef(null);
+  const textRef = useRef("ABC");
   const { data, setData } = useContext(StoreContext);
   const { cliText, setCliText } = useContext(StoreContext);
   const { group, setGroup } = useContext(StoreContext);
@@ -19,6 +19,8 @@ const FormInput = () => {
     type: "One Word",
     regex: "",
     desc: "",
+    optional: "no",
+    ignore: "no"
   });
 
   const el = (sel, par) => (par || document).querySelector(sel);
@@ -26,7 +28,6 @@ const FormInput = () => {
 
   useEffect(() => {
     let col = "";
-   
     text.map((val) => (col += `<p>${val}</p>`));
     setHtml(col);
   }, [text]);
@@ -47,9 +48,7 @@ const FormInput = () => {
     let blocks = [];
     let lineNumStart = 0;
     let lineNumEnd = 0;
-    let lines =
-      text.findIndex((val) => val.includes(window.getSelection().toString())) +
-      1;
+    let lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
 
     if (window.getSelection().toString() !== "") {
       if (window.getSelection) {
@@ -60,7 +59,9 @@ const FormInput = () => {
           let tmpDiv = document.createElement("div");
           tmpDiv.appendChild(docFragment);
           let selHTML = tmpDiv.textContent;
-          let splitArray = selHTML.split("\n");
+          let splitArray = []
+          if (selHTML.includes("\r\n")) { splitArray = selHTML.split("\r\n");}
+          else { splitArray = selHTML.split("\n");}
           blocks = splitArray;
           if (blocks.length > 1) {
             setGroup((prev) => [...prev, window.getSelection().toString()]);
@@ -71,13 +72,24 @@ const FormInput = () => {
         }
       }
       setCount(count + 1);
-      let start = window.getSelection().anchorOffset;
-      let end = window.getSelection().focusOffset - 1;
-
-      if (start > end) {
+      // let start = window.getSelection().anchorOffset;
+      // let end = window.getSelection().focusOffset - 1;
+      let start;
+      let end;
+      if (blocks.length > 1) {
         start = window.getSelection().focusOffset;
         end = window.getSelection().anchorOffset - 1;
+      } else {
+        start = text[lines - 1].indexOf(getSelection()) + 1;
+        end = start + window.getSelection().toString().length - 1;
       }
+      
+
+      
+      // if (start > end) {
+      //   start = window.getSelection().focusOffset;
+      //   end = window.getSelection().anchorOffset - 1;
+      // }
       setData((prev) => {
         if (blocks.length > 1) {
           return [
@@ -156,8 +168,8 @@ const FormInput = () => {
     // var data = new FormData();
     //  data.append("file", cli_output_text);
     var file = new File([cli_output_text], "cli_output_text", {lastModified: new Date(),type: "text/plain"});
-   console.log(file);
-   setCliText(file);
+    console.log(file);
+    setCliText(file);
 
     // element.href = URL.createObjectURL(file);
     // element.download = "myFile.txt";
