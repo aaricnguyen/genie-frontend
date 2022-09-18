@@ -146,7 +146,7 @@ function App() {
       }
     });
 
-    setJson(JSON.stringify(newTest));
+    setJson(JSON.stringify(newTest, undefined, 1));
     const element = document.createElement("a");
     const cli_output_json = new Blob([JSON.stringify(newTest)], {
       type: "application/json",
