@@ -57,16 +57,7 @@ function App() {
         });
       }
     });
-
-    // console.log("newTest: ", newTest)
-
-    // test.forEach((item) => {
-    //   newTest.forEach((ele) => {
-    //     if (item.lineNum === ele.lineNum && item.isBlock === undefined) {
-    //       ele.selections.push(item.selections);
-    //     }
-    //   });
-    // });
+  
     newTest.forEach((ele) => {
       // let newSelections = []
       let addedNames = []

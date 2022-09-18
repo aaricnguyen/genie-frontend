@@ -104,7 +104,7 @@ const FormInput = () => {
         end = window.getSelection().anchorOffset - 1;
       } else {
         console.log('text of lines', text[lines - 1]);
-        start = round((selectedStr.offsetLeft)/charOffsetWidth);
+        start = round((selectedStr.offsetLeft+1)/charOffsetWidth);
         end = start + window.getSelection().toString().length - 1;
       }
       

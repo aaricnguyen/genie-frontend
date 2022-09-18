@@ -24,7 +24,7 @@
 }
 .selectField {
   position: relative;
-  width: 99%;
+  width: 70%;
   padding: 7px 20px 7px 5px;
   border: 1px solid #0076D5;
   border-radius: 5px;
@@ -66,15 +66,18 @@
   position: absolute;
   top: 50%;
   left: 10px;
-  color: #545454;
-  font-weight: 500;
-  font-size: 12px;
+  /* color: #545454; */
+  /* font-weight: 500; */
+  /* font-size: 12px; */
   line-height: 18px;
   letter-spacing: 0.5px;
   pointer-events: none;
   transition: 0.25s ease;
   transform: translateY(-50%);
   user-select: none;
+  font-size: 13px;
+  color: gray;
+  font-weight: bold;
 }
 .formControl:not(:placeholder-shown) + .formLabel,
 .formControl:focus + .formLabel {

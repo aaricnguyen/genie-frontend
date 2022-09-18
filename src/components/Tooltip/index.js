@@ -42,41 +42,7 @@ const Tooltip = ({ info = {}, handleChangePopup = () => {}, values }) => {
               <label className={styles.formLabel}>Name</label>
             </div>
           </div>
-          <div className={styles.formGroup}>
-            <select className={styles.selectField} value={values.type} name="type" id={id} onChange={(e) => handleChangePopup(e, lineNum)}>
-              <option>Select type</option>
-              <option value="One Word">One Word</option>
-              <option value="Complete line">Complete line</option>
-            </select>
-          </div>
-          <div className={styles.formGroup}>
-            <div className={styles.inputField}>
-              <input 
-                type="text"
-                placeholder=" "
-                name="regex" 
-                id={id} 
-                value={values.regex} 
-                onChange={(e) => handleChangePopup(e, lineNum)} 
-                className={styles.formControl} 
-              />
-              <label className={styles.formLabel}>Regex</label>
-            </div>
-          </div>
-          <div className={styles.formGroup}>
-            <div className={styles.inputField}>
-              <input 
-                type="text" 
-                placeholder=" "
-                name="desc" 
-                id={id} 
-                value={values.desc} 
-                onChange={(e) => handleChangePopup(e, lineNum)} 
-                className={styles.formControl} 
-              />
-              <label className={styles.formLabel}>Description</label>
-            </div>
-          </div>
+
           <div className={styles.formGroup}>
             <div className={styles.inputField}>
               <input 
@@ -91,18 +57,63 @@ const Tooltip = ({ info = {}, handleChangePopup = () => {}, values }) => {
               <label className={styles.formLabel}>Group</label>
             </div>
           </div>
+
           <div className={styles.formGroup}>
+            <div className={styles.inputField}>
+              <input 
+                type="text"
+                placeholder=" "
+                name="regex" 
+                id={id} 
+                value={values.regex} 
+                onChange={(e) => handleChangePopup(e, lineNum)} 
+                className={styles.formControl} 
+              />
+              <label className={styles.formLabel}>Regex</label>
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+            <div className={styles.inputField}>
+              <input 
+                type="text" 
+                placeholder=" "
+                name="desc" 
+                id={id} 
+                value={values.desc} 
+                onChange={(e) => handleChangePopup(e, lineNum)} 
+                className={styles.formControl} 
+              />
+              <label className={styles.formLabel}>Description</label>
+            </div>
+          </div>
+
+          <div className={styles.formGroup}>
+          <label for="type" className={styles.tooltipText}> Type </label>
+            <select className={styles.selectField} value={values.type} name="type" id={id} onChange={(e) => handleChangePopup(e, lineNum)}>
+              <option value="One Word">One Word</option>
+              <option value="Complete line">Complete line</option>
+            </select>
+          </div>
+
+          <div className={styles.formGroup}>
+            <label for="optional" className={styles.tooltipText}> Optional </label>
             <select className={styles.selectField} value={values.optional} name="optional" id={id} onChange={(e) => handleChangePopup(e, lineNum)}>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
           </div>
+
           <div className={styles.formGroup}>
-            <select className={styles.selectField} value={values.ignore} name="ignore" id={id} onChange={(e) => handleChangePopup(e, lineNum)}>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
-            </select>
+            <div className={styles.inputField}>
+              <label for="ignore" className={styles.tooltipText}> Ignore </label>
+              <select className={styles.selectField} value={values.ignore} name="ignore" id={id} onChange={(e) => handleChangePopup(e, lineNum)}>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
           </div>
+
         </form>
       </div>
     </div>
