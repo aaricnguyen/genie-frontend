@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect, useRef } from "react";
 import { uniqueId, forEach, round } from "lodash";
 import { StoreContext } from "../../context";
 import Tooltip from "../Tooltip";
+import GroupTooltip from "../GroupTooltip";
 
 import styles from "./style.module.css";
 
@@ -22,9 +23,14 @@ const FormInput = () => {
     optional: "no",
     ignore: "no"
   });
+  const [infoGrpPopup, setGrpInfoPopup] = useState({});
+  const [grpvalues, setGrpValues] = useState({
+    name: "",
+  });
 
   const el = (sel, par) => (par || document).querySelector(sel);
   const elPopup = el("#tooltip");
+  const grPopup = el("#grouptooltip")
 
   let firstLineTopOffset = 29;
   let lineHeightOffset = 15;
@@ -36,147 +42,112 @@ const FormInput = () => {
     setHtml(col);
   }, [text]);
 
-  const handleLineNumBlock = (blocks) => {
-    let indexArr = [];
-    for (let i = 0; i < text.length; i++) {
-      for (let j = 0; j < blocks.length; j++) {
-        if (text[i].includes(blocks[j])) {
-          indexArr.push(i);
-        }
-      }
-    }
-    return indexArr;
-  };
-
-
   const getSeclection = () => {
     let blocks = [];
     let lineNumStart = 0;
     let lineNumEnd = 0;
     // let lines = 1;
     let selID = 'id'+(Math.floor(1000 + Math.random() * 9000)).toString();
-    // let lines = ((window.getSelection().offsetTop - firstLineTopOffset)/lineHeightOffset) + 1;
-    // console.log('get line: ', lines);
-    // console.log('selection', window.getSelection());
-    // let lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
+    let grpID = 'id'+(Math.floor(1000 + Math.random() * 9000)).toString();
+    let tmpID = 'tmp'+(Math.floor(1000 + Math.random() * 9000)).toString();
+    let tmpDiv;
+    let isGroup;
+    let isMultiLines;
+    let isGrpDuplicated;
+    let range;
 
     if (window.getSelection().toString() !== "") {
       if (window.getSelection) {
         let selectionRange = window.getSelection();
         if (selectionRange.rangeCount > 0) {
-          let range = selectionRange.getRangeAt(0);
+          range = selectionRange.getRangeAt(0);
           let docFragment = range.cloneContents();
-          let tmpDiv = document.createElement("div");
+          tmpDiv = document.createElement("span");
+          tmpDiv.setAttribute('id', tmpID);
           tmpDiv.appendChild(docFragment);
-          let selHTML = tmpDiv.textContent;
+          // range.surroundContents(tmpDiv);
+          if (tmpDiv.textContent.includes("\n")) {isMultiLines = true};
+          if (tmpDiv.childElementCount > 0) {isGroup = true};
+          tmpDiv.childNodes.forEach((cld) => {
+            console.log('child node', cld.className)
+            if (cld.className==="groupselect") {return isGrpDuplicated = true}});
+          console.log('isGrpDuplicated', isGrpDuplicated)
+          console.log('isMultiLines', isMultiLines)
 
-          console.log('Enable Group Selection', document.getElementById("groupSelect"));
-
-          let splitArray = [];
-          if (selHTML.includes("\r\n")) { splitArray = selHTML.split("\r\n");}
-          else { splitArray = selHTML.split("\n");}
-          blocks = splitArray;
-          
-          if (blocks.length > 1) {
-            setGroup((prev) => [...prev, window.getSelection().toString()]);
-            const indexArr = handleLineNumBlock(blocks);
-            lineNumStart = indexArr.shift() + 1;
-            lineNumEnd = indexArr.pop() + 1;
-          }
+          // console.log('tmpDiv', tmpDiv)
+          // console.log('tmpDiv offset left', tmpDiv.offsetLeft)
+          // console.log('tmpDiv offset width', tmpDiv.offsetWidth)
+          // console.log('tmpDiv count child', tmpDiv.childElementCount)
+          // console.log('tmpDiv child list', tmpDiv.childNodes)
         }
       }
 
-      hightlightText(blocks, selID);
+      if (isGroup && isGrpDuplicated === undefined) {hightlightGroupSelected(tmpDiv, grpID, range)}
+      else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
+        hightlightTextSelected(tmpDiv, selID, range)}
 
-      console.log("get seletion:  ", document.getElementById(selID));
-      let selectedStr = document.getElementById(selID);
-      let lines = (selectedStr.offsetTop - firstLineTopOffset)/lineHeightOffset
-      lines = round(lines) + 1;
-      console.log('get line, ', lines);
-      console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
-      console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);
-
-
-      setCount(count + 1);
-      // let start = window.getSelection().anchorOffset;
-      // let end = window.getSelection().focusOffset - 1;
       let start;
       let end;
-      if (blocks.length > 1) {
-        start = window.getSelection().focusOffset;
-        end = window.getSelection().anchorOffset - 1;
-      } else {
-        console.log('text of lines', text[lines - 1]);
-        let startOffset = selectedStr.offsetLeft
-        let widthOffset = selectedStr.offsetWidth
+      let lines;
+      let grpChildIDList = [];
 
-        // if (startOffset%2===0) {} else {startOffset=startOffset+3}
-
-        start = round(startOffset/charOffsetWidth);
-        end = start + window.getSelection().toString().length - 1;
+      if (isGroup && isGrpDuplicated === undefined) {
+        tmpDiv.childNodes.forEach((chl) => {if (chl.className==="highlight") {grpChildIDList.push(chl.id)}});
+        console.log("list of child", grpChildIDList);
       }
-      
+      else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
+        console.log("get seletion:  ", document.getElementById(selID));
+        let selectedStr = document.getElementById(selID);
+        lines = round((selectedStr.offsetTop - firstLineTopOffset)/lineHeightOffset) +1;
+        console.log('text of lines', text[lines - 1]);
+        start = round(selectedStr.offsetLeft/charOffsetWidth);
+        end = start + window.getSelection().toString().length - 1;
+        // console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
+        // console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);  
+      }
 
+      // console.log('get line, ', lines);
+      // console.log('start ', start);
+      // console.log('end ', end);
       
-      // if (start > end) {
-      //   start = window.getSelection().focusOffset;
-      //   end = window.getSelection().anchorOffset - 1;
-      // }
-
       
       setData((prev) => {
         console.log("prev", prev);
-        if (blocks.length > 1) {
+        if (isGroup && isGrpDuplicated === undefined) {
+          return [
+            ...prev,
+            { isGroup: isGroup,
+              id: grpID,
+              name: "",
+              childIDList: grpChildIDList,
+            },
+          ];
+        }
+        else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
           return [
             ...prev,
             {
-              lineStart: lineNumStart,
-              lineEnd: lineNumEnd,
-              isBlock: true,
-              dictionary: [
+              isGroup: isGroup,
+              lineNum: lines,
+              selections: [
                 {
-                  lineNum: lines,
-                  selections: [
-                    {
-                      id: uniqueId("myprefix-"),
-                      name: String.fromCharCode(65 + count),
-                      value: window.getSelection().toString(),
-                      start: start,
-                      end: end,
-                      type: "",
-                      regex: "",
-                      desc: "",
-                      group: "",
-                      optional: "no",
-                      ignore: "no",
-                    },
-                  ],
+                  id: selID,
+                  name: `Sel${Math.floor(1000 + Math.random() * 9000)}`,
+                  value: window.getSelection().toString(),
+                  start: start,
+                  end: end,
+                  type: "",
+                  regex: "",
+                  desc: "",
+                  group: "",
+                  optional: "no",
+                  ignore: "no",
                 },
               ],
             },
           ];
         }
-        return [
-          ...prev,
-          {
-            lineNum: lines,
-            selections: [
-              {
-                id: selID,
-                name: `Sel${Math.floor(1000 + Math.random() * 9000)}`,
-                value: window.getSelection().toString(),
-                start: start,
-                end: end,
-                type: "",
-                regex: "",
-                desc: "",
-                group: "",
-                optional: "no",
-                ignore: "no",
-              },
-            ],
-          },
-        ];
+        else {return [...prev]}
         
       });
 
@@ -184,19 +155,24 @@ const FormInput = () => {
     }
   };
 
-  const hightlightText = (blocks, selID) => {
-    var selection = window.getSelection();
-    var range = selection.getRangeAt(0);
-    var newNode = document.createElement("span");
-    if (blocks.length > 1) {
-      newNode.setAttribute("style", "background-color: #fce0e5;");
-      newNode.classList.add("block");
-    } else {
-      newNode.setAttribute("style", "background-color: pink;");
-      newNode.classList.add("highlight");
-      newNode.setAttribute("id", selID);  
-      }
-    range.surroundContents(newNode);
+  const hightlightTextSelected = (tmpDiv, selID, range) => {
+    // if (blocks.length > 1) {
+    //   tmpDiv.setAttribute("style", "background-color: #fce0e5;");
+    //   tmpDiv.classList.add("block");
+    // } else {
+    tmpDiv.setAttribute("style", "background-color: pink;");
+    tmpDiv.classList.add("highlight");
+    tmpDiv.setAttribute("id", selID);
+    range.surroundContents(tmpDiv);
+      // }
+
+  };
+
+  const hightlightGroupSelected = (tmpDiv, grpID, range) => {
+    tmpDiv.setAttribute("style", "background-color: #fce0e5;");
+    tmpDiv.classList.add("groupselect");
+    tmpDiv.setAttribute("id", grpID);
+    range.surroundContents(tmpDiv);
   };
 
   const handleChange = (e) => {
@@ -221,10 +197,10 @@ const FormInput = () => {
   const handleMouseMove = (e) => {
     const { offsetLeft, offsetTop, className, innerText } = e.target;
     // var lineNum = text.findIndex((val) => val.includes(innerText)) + 1;
-    setCoords({
-      x: e.clientX + offsetLeft,
-      y: e.clientY + offsetTop,
-    });
+    // setCoords({
+    //   x: e.clientX + offsetLeft,
+    //   y: e.clientY + offsetTop,
+    // });
     // console.log("offsetLeft: ", offsetLeft)
     // console.log("offsetTop: ", offsetTop)
     // console.log("clientY", document.getElementById('editable').clientY)
@@ -237,40 +213,66 @@ const FormInput = () => {
       });
 
       let results;
+      console.log ("data", data);
       data.forEach ((dt) => {
-        if (dt.selections[0].id === e.target.id) {results = dt};
+        console.log ("is Group", dt.isGroup);
+        if (dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
       });
 
-      // console.log('results ...', results);
+      console.log('results ...', results);
       let lineNum = results.lineNum;
       let newArray = results.selections;
 
+      console.log('line Num ...', results.lineNum);
+      console.log('selection ...', results.selections);
+
       setInfoPopup({ lineNum, ...newArray[0] });
-      setValues({ ...newArray[0] });
-    } else {
-      Object.assign(elPopup.style, {
-        display: `none`,
+      setValues({ ...newArray[0]});
+    } 
+    else if (className === "groupselect") {
+      Object.assign(grPopup.style, {
+        left: `${offsetLeft+15}px`,
+        top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y+28}px`,
+        display: `block`,
       });
+      let results;
+      data.forEach ((dt) => {
+        if (dt.isGroup && dt.id === e.target.id) {results = dt};
+      });
+
+      console.log('results ...', results);
+      // let lineNum = results.lineNum;
+      let newArray = results;
+      let name = results.name;
+
+      setGrpInfoPopup({name, ...newArray});
+      setGrpValues({...newArray});
+    }
+    else
+    {
+      if (elPopup) {
+        Object.assign(elPopup.style, {
+          display: `none`,
+        });
+      }
+
+      if (grPopup) {
+        Object.assign(grPopup.style, {
+          display: `none`,
+        });
+      }
+      
     }
   };
   
 
   const handleChangePopup = (e, lineNum) => {
     const { name, value, id } = e.target;
-    console.log("id: ", id)
+    console.log("id: ", id);
     setData((prev) => {
-      let indexSelection;
       let idx;
-      // let index = prev.findIndex((dt) => dt.lineNum === lineNum);
-      // indexSelection = prev[index].selections.findIndex((selection) =>
-      //   selection.id.includes(id)
-      // );
-      // prev[index].selections[indexSelection] = {
-      //   ...prev[index].selections[indexSelection],
-      //   [name]: value,
-      // };
       prev.forEach((dt, index) => {
-        if (dt.lineNum === lineNum && dt.selections[0].id === id) {
+        if (dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === id) {
           idx = index;
         }
       })
@@ -280,9 +282,42 @@ const FormInput = () => {
       }
       return prev;
     });
+
     setValues({
       [name]: value,
     });
+  };
+
+  const handleGroupChangePopup = (e) => {
+    const {name, value, id} = e.target;
+    let childIDList = [];
+    console.log("id: ", id);
+    console.log("value:    ", value);
+    setData((prev) => {
+      console.log("prev", prev);
+      let idx;
+      prev.forEach((dt, index) => {
+        if (dt.isGroup && dt.id === id) {
+          idx = index;
+          childIDList = dt.childIDList;
+        }
+      })
+      prev[idx] = {
+        ...prev[idx],
+        [name]: value,
+      }
+      return prev;
+    });
+
+    setGrpValues({
+      [name]: value,
+    });
+
+    data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+      dt.selections[0].group = value
+      }
+    });
+
   };
 
   return (
@@ -302,6 +337,11 @@ const FormInput = () => {
         info={infoPopup}
         handleChangePopup={handleChangePopup}
         values={values}
+      />
+      <GroupTooltip
+        info={infoGrpPopup}
+        handleGroupChangePopup={handleGroupChangePopup}
+        values={grpvalues}
       />
     </>
   );
