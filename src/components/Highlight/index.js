@@ -2,7 +2,7 @@ import React from "react";
 
 import styles from './styles.module.css';
 
-const Highlight = ({ json = "", python = "",testParser="" }) => {
+const Highlight = ({ json = "", python = "", testParser = "" }) => {
   return (
     <>
       <div className={styles.parserCode}>

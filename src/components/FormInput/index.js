@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { uniqueId, forEach } from "lodash";
+import { uniqueId, forEach, round } from "lodash";
 import { StoreContext } from "../../context";
 import Tooltip from "../Tooltip";
 
@@ -26,6 +26,10 @@ const FormInput = () => {
   const el = (sel, par) => (par || document).querySelector(sel);
   const elPopup = el("#tooltip");
 
+  let firstLineTopOffset = 29;
+  let lineHeightOffset = 15;
+  let charOffsetWidth = 8;
+
   useEffect(() => {
     let col = "";
     text.map((val) => (col += `<p>${val}</p>`));
@@ -49,7 +53,12 @@ const FormInput = () => {
     let blocks = [];
     let lineNumStart = 0;
     let lineNumEnd = 0;
-    let lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
+    // let lines = 1;
+    let selID = 'id'+(Math.floor(1000 + Math.random() * 9000)).toString();
+    // let lines = ((window.getSelection().offsetTop - firstLineTopOffset)/lineHeightOffset) + 1;
+    // console.log('get line: ', lines);
+    // console.log('selection', window.getSelection());
+    // let lines = text.findIndex((val) => val.includes(window.getSelection().toString())) + 1;
 
     if (window.getSelection().toString() !== "") {
       if (window.getSelection) {
@@ -60,10 +69,11 @@ const FormInput = () => {
           let tmpDiv = document.createElement("div");
           tmpDiv.appendChild(docFragment);
           let selHTML = tmpDiv.textContent;
-          let splitArray = []
+          let splitArray = [];
           if (selHTML.includes("\r\n")) { splitArray = selHTML.split("\r\n");}
           else { splitArray = selHTML.split("\n");}
           blocks = splitArray;
+          
           if (blocks.length > 1) {
             setGroup((prev) => [...prev, window.getSelection().toString()]);
             const indexArr = handleLineNumBlock(blocks);
@@ -72,6 +82,18 @@ const FormInput = () => {
           }
         }
       }
+
+      hightlightText(blocks, selID);
+
+      console.log("get seletion:  ", document.getElementById(selID));
+      let selectedStr = document.getElementById(selID);
+      let lines = (selectedStr.offsetTop - firstLineTopOffset)/lineHeightOffset
+      lines = round(lines) + 1;
+      console.log('get line, ', lines);
+      console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
+      console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);
+
+
       setCount(count + 1);
       // let start = window.getSelection().anchorOffset;
       // let end = window.getSelection().focusOffset - 1;
@@ -81,7 +103,8 @@ const FormInput = () => {
         start = window.getSelection().focusOffset;
         end = window.getSelection().anchorOffset - 1;
       } else {
-        start = text[lines - 1].indexOf(getSelection());
+        console.log('text of lines', text[lines - 1]);
+        start = round((selectedStr.offsetLeft)/charOffsetWidth);
         end = start + window.getSelection().toString().length - 1;
       }
       
@@ -94,6 +117,7 @@ const FormInput = () => {
 
       
       setData((prev) => {
+        console.log("prev", prev);
         if (blocks.length > 1) {
           return [
             ...prev,
@@ -130,8 +154,8 @@ const FormInput = () => {
             lineNum: lines,
             selections: [
               {
-                id: uniqueId("myprefix-"),
-                name: `Sel-${Math.floor(1000 + Math.random() * 9000)}`,
+                id: selID,
+                name: `Sel${Math.floor(1000 + Math.random() * 9000)}`,
                 value: window.getSelection().toString(),
                 start: start,
                 end: end,
@@ -146,14 +170,13 @@ const FormInput = () => {
           },
         ];
         
-
-        
       });
 
-      hightlightText(blocks);
+      // hightlightText(blocks, selID);
     }
   };
-  const hightlightText = (blocks) => {
+
+  const hightlightText = (blocks, selID) => {
     var selection = window.getSelection();
     var range = selection.getRangeAt(0);
     var newNode = document.createElement("span");
@@ -163,7 +186,8 @@ const FormInput = () => {
     } else {
       newNode.setAttribute("style", "background-color: pink;");
       newNode.classList.add("highlight");
-    }
+      newNode.setAttribute("id", selID);  
+      }
     range.surroundContents(newNode);
   };
 
@@ -188,28 +212,31 @@ const FormInput = () => {
 
   const handleMouseMove = (e) => {
     const { offsetLeft, offsetTop, className, innerText } = e.target;
-    var lineNum = text.findIndex((val) => val.includes(innerText)) + 1;
+    // var lineNum = text.findIndex((val) => val.includes(innerText)) + 1;
     setCoords({
       x: e.clientX + offsetLeft,
       y: e.clientY + offsetTop,
     });
-    console.log("offsetLeft: ", offsetLeft)
-    console.log("offsetTop: ", offsetTop)
-    console.log("clientY", document.getElementById('editable').clientY)
-    console.log("clientTop", document.getElementById('editable').clientTop)
+    // console.log("offsetLeft: ", offsetLeft)
+    // console.log("offsetTop: ", offsetTop)
+    // console.log("clientY", document.getElementById('editable').clientY)
+    // console.log("clientTop", document.getElementById('editable').clientTop)
     if (className === "highlight") {
       Object.assign(elPopup.style, {
-        left: `${offsetLeft + 5}px`,
-        top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y + 35}px`,
+        left: `${offsetLeft}px`,
+        top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y + 28}px`,
         display: `block`,
       });
-      let results = data.map((dt) => {
-        if (dt.isBlock === undefined) {
-          const { selections } = dt;
-          return selections.find((item) => item.value.includes(innerText));
-        }
+
+      let results;
+      data.forEach ((dt) => {
+        if (dt.selections[0].id === e.target.id) {results = dt};
       });
-      let newArray = results.filter((result) => result !== undefined);
+
+      // console.log('results ...', results);
+      let lineNum = results.lineNum;
+      let newArray = results.selections;
+
       setInfoPopup({ lineNum, ...newArray[0] });
       setValues({ ...newArray[0] });
     } else {

@@ -21,7 +21,6 @@ const PattenSelector = ({ text }) => {
       text.findIndex((val) =>
         val.includes(window.getSelection().focusNode.nodeValue)
       ) + 1;
-    console.log(window.getSelection().focusNode.nodeValue);
 
     if (window.getSelection().toString() !== "") {
       setCount(count + 1);
@@ -60,6 +59,7 @@ const PattenSelector = ({ text }) => {
     var range = selection.getRangeAt(0);
     var newNode = document.createElement("span");
     newNode.setAttribute("style", "background-color: pink;");
+    newNode.setAttribute("id", "test");
     range.surroundContents(newNode);
   };
   return (

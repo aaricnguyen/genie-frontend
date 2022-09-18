@@ -151,7 +151,8 @@ function App() {
     const cli_output_json = new Blob([JSON.stringify(newTest)], {
       type: "application/json",
     });
-
+    // var displayJsonData = JSON.stringify(newTest, undefined);
+    // document.getElementById('jsonOutput').innerHTML = displayJsonData;
     // var data = new FormData();
     //  data.append("file", cli_output_text);
     var cliJson = new File([cli_output_json], "cli_output_json", {
@@ -200,7 +201,7 @@ function App() {
         data: formData,
       }).then((res)=>{
         console.log(res.data);
-        setTestParser(JSON.stringify(res.data))
+        setTestParser(JSON.stringify(res.data, undefined, 1))
       })
     
  
@@ -371,9 +372,10 @@ function App() {
               <h2 className="json-title">JSON</h2>
               <textarea
                 className="export-json"
-                value={json}
                 style={{ height: "300px", resize: "none", outline: "none" }}
-              ></textarea>
+                value={json}
+                >
+              </textarea>
             </div>
           </div>
           <div className={styles.regexRight}>
