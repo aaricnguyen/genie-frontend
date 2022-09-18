@@ -28,7 +28,7 @@ const FormInput = () => {
 
   let firstLineTopOffset = 29;
   let lineHeightOffset = 15;
-  let charOffsetWidth = 8;
+  let charOffsetWidth = 7.8;
 
   useEffect(() => {
     let col = "";
@@ -69,6 +69,9 @@ const FormInput = () => {
           let tmpDiv = document.createElement("div");
           tmpDiv.appendChild(docFragment);
           let selHTML = tmpDiv.textContent;
+
+          console.log('Enable Group Selection', document.getElementById("groupSelect"));
+
           let splitArray = [];
           if (selHTML.includes("\r\n")) { splitArray = selHTML.split("\r\n");}
           else { splitArray = selHTML.split("\n");}
@@ -104,7 +107,12 @@ const FormInput = () => {
         end = window.getSelection().anchorOffset - 1;
       } else {
         console.log('text of lines', text[lines - 1]);
-        start = round((selectedStr.offsetLeft+1)/charOffsetWidth);
+        let startOffset = selectedStr.offsetLeft
+        let widthOffset = selectedStr.offsetWidth
+
+        // if (startOffset%2===0) {} else {startOffset=startOffset+3}
+
+        start = round(startOffset/charOffsetWidth);
         end = start + window.getSelection().toString().length - 1;
       }
       
