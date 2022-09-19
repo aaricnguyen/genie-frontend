@@ -1,6 +1,6 @@
 .tooltip {
   position: absolute;
-  width: 300px;
+  width: 200px;
   height: auto;
   padding: 15px;
   background: #fff;
@@ -15,7 +15,7 @@
   margin-bottom: 10px;
 }
 .tooltipText {
-  font-size: 13px;
+  font-size: 12px;
   color: gray;
   font-weight: bold;
 }
@@ -39,21 +39,17 @@
   border-color: #063A75;
 }
 .formGroup {
-  position: relative;
-  margin-bottom: 10px;
-}
-.inputField {
-  position: relative;
-  padding-top: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 10px;
 }
 .formControl {
   font-size: 14px;
-  /* padding: 12px 20px; */
   border: none;
   border: 1px solid #0076D5;
   border-radius: 5px;
-  width: 95%;
+  width: 50%;
   min-height: 30px;
   padding: 0 5px;
   transition: .5s all;
@@ -62,29 +58,56 @@
 .formControl:focus {
   border-color: #063A75;
 }
+.formSelect {
+  font-size: 12px;
+  border: none;
+  border: 1px solid #0076D5;
+  border-radius: 5px;
+  width: 56%;
+  min-height: 30px;
+  padding: 0 5px;
+  transition: .5s all;
+  outline: none;
+}
 .formLabel {
-  position: absolute;
-  top: 50%;
-  left: 10px;
-  /* color: #545454; */
-  /* font-weight: 500; */
-  /* font-size: 12px; */
   line-height: 18px;
   letter-spacing: 0.5px;
-  pointer-events: none;
-  transition: 0.25s ease;
-  transform: translateY(-50%);
-  user-select: none;
-  font-size: 13px;
+  font-size: 12px;
   color: gray;
   font-weight: bold;
+  width: 30%;
 }
-.formControl:not(:placeholder-shown) + .formLabel,
-.formControl:focus + .formLabel {
-  top: 3px;
-  left: 5px;
-  padding: 0 5px;
-  display: inline-block;
-  background: #fff;
-  color: #27235E;
+.btnGroup {
+  display: flex;
+  justify-content: space-around;
+}
+.btnSave {
+  background: #0076D5;
+  width: 80px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all .5s ease;
+}
+.btnSave:hover {
+  background: #0353A8;
+}
+.btnUnselect {
+  background: #D4371C;
+  width: 80px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all .5s ease;
+}
+.btnUnselect:hover {
+  background: #AF2D17;
 }

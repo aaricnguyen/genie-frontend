@@ -16,8 +16,11 @@ const FormInput = () => {
   const [count, setCount] = useState(0);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [infoPopup, setInfoPopup] = useState({});
+  const [idSelection, setIdSelection] = useState("");
   const [values, setValues] = useState({
     type: "One Word",
+    name: "",
+    group: "",
     regex: "",
     desc: "",
     optional: "no",
@@ -27,14 +30,40 @@ const FormInput = () => {
   const [grpvalues, setGrpValues] = useState({
     name: "",
   });
+  const [idGroupSelection, setIdGroupSelection] = useState("");
 
   const el = (sel, par) => (par || document).querySelector(sel);
   const elPopup = el("#tooltip");
-  const grPopup = el("#grouptooltip")
+  const grPopup = el("#grouptooltip");
 
-  let firstLineTopOffset = 29;
+  const getOperatingSystem = (window) => {
+    let operatingSystem = 'Not known';
+    if (window.navigator.appVersion.indexOf('Win') !== -1) { operatingSystem = 'Windows OS'; }
+    if (window.navigator.appVersion.indexOf('Mac') !== -1) { operatingSystem = 'MacOS'; }
+    if (window.navigator.appVersion.indexOf('X11') !== -1) { operatingSystem = 'UNIX OS'; }
+    if (window.navigator.appVersion.indexOf('Linux') !== -1) { operatingSystem = 'Linux OS'; }
+
+    return operatingSystem;
+  }
+
+  const OS = (window) => {
+    return getOperatingSystem(window);
+  }
+
+  console.log("OS: ", OS(window))
+
+  // WIN
+  let firstLineTopOffset = 31;
   let lineHeightOffset = 15;
-  let charOffsetWidth = 7.8;
+  let charOffsetWidth = 7.2;
+
+  /* MAC */
+  if (OS(window) === 'MacOS') {
+    console.log("IT'S WORK")
+    firstLineTopOffset = 29;
+    lineHeightOffset = 15;
+    charOffsetWidth = 7.8;
+  }
 
   useEffect(() => {
     let col = "";
@@ -75,8 +104,10 @@ const FormInput = () => {
           console.log('isMultiLines', isMultiLines)
 
           // console.log('tmpDiv', tmpDiv)
+          // console.log('tmpDiv offset top', tmpDiv.offsetTop)
           // console.log('tmpDiv offset left', tmpDiv.offsetLeft)
           // console.log('tmpDiv offset width', tmpDiv.offsetWidth)
+          // console.log('tmpDiv offset high', tmpDiv.offsetHeight)
           // console.log('tmpDiv count child', tmpDiv.childElementCount)
           // console.log('tmpDiv child list', tmpDiv.childNodes)
         }
@@ -156,16 +187,10 @@ const FormInput = () => {
   };
 
   const hightlightTextSelected = (tmpDiv, selID, range) => {
-    // if (blocks.length > 1) {
-    //   tmpDiv.setAttribute("style", "background-color: #fce0e5;");
-    //   tmpDiv.classList.add("block");
-    // } else {
     tmpDiv.setAttribute("style", "background-color: pink;");
     tmpDiv.classList.add("highlight");
     tmpDiv.setAttribute("id", selID);
     range.surroundContents(tmpDiv);
-      // }
-
   };
 
   const hightlightGroupSelected = (tmpDiv, grpID, range) => {
@@ -174,6 +199,44 @@ const FormInput = () => {
     tmpDiv.setAttribute("id", grpID);
     range.surroundContents(tmpDiv);
   };
+
+  const removeHighlightTextSelected = (e, lineNum, id, isGroup = true, group) => {
+    e.preventDefault();
+    let unselect = document.getElementById(id);
+    let pa = unselect.parentNode;
+    while(unselect.firstChild) {
+      pa.insertBefore(unselect.firstChild, unselect);
+    }
+    unselect.remove();
+    removeSelection(lineNum, id, isGroup, group);
+  }
+
+  const removeSelection = (lineNum, id, isGroup, group) => {
+    console.log("LINE NUM: ", lineNum)
+    console.log("ID: ", id)
+    console.log("data: ", data);
+    const removed = data.filter((dt) => dt.selections[0]?.id !== id)
+    console.log("removed: ", removed)
+    if (!isGroup) {
+      setData((prev) => {
+        return [...prev.filter((dt) => dt.selections[0]?.id !== id)]
+      })
+    } else {
+      
+    }
+    
+    // if (flag) {
+    //   setData((prev) => {
+    //     let next;
+    //     let find = prev.findIndex((val) => val.id === id && val.isGroup);
+    //     if (find !== -1) {
+    //       let deleted = prev.filter((dt) => dt.id !== id);
+    //       next = deleted.map((dt) => dt.selections[0].group === "")
+    //     }
+    //     return next;
+    //   })
+    // }
+  }
 
   const handleChange = (e) => {
     const { textContent } = e.currentTarget;
@@ -197,10 +260,6 @@ const FormInput = () => {
   const handleMouseMove = (e) => {
     const { offsetLeft, offsetTop, className, innerText } = e.target;
     // var lineNum = text.findIndex((val) => val.includes(innerText)) + 1;
-    // setCoords({
-    //   x: e.clientX + offsetLeft,
-    //   y: e.clientY + offsetTop,
-    // });
     // console.log("offsetLeft: ", offsetLeft)
     // console.log("offsetTop: ", offsetTop)
     // console.log("clientY", document.getElementById('editable').clientY)
@@ -242,11 +301,13 @@ const FormInput = () => {
 
       console.log('results ...', results);
       // let lineNum = results.lineNum;
-      let newArray = results;
-      let name = results.name;
+      if (results !== undefined) {
+        let newArray = results;
+        let name = results.name;
 
-      setGrpInfoPopup({name, ...newArray});
-      setGrpValues({...newArray});
+        setGrpInfoPopup({name, ...newArray});
+        setGrpValues({...newArray});
+      }
     }
     else
     {
@@ -264,60 +325,65 @@ const FormInput = () => {
       
     }
   };
-  
 
-  const handleChangePopup = (e, lineNum) => {
-    const { name, value, id } = e.target;
-    console.log("id: ", id);
+  const handleSubmitTooltip = (e, lineNum) => {
+    e.preventDefault();
     setData((prev) => {
       let idx;
       prev.forEach((dt, index) => {
-        if (dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === id) {
+        if (dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
           idx = index;
         }
       })
       prev[idx].selections[0] = {
         ...prev[idx].selections[0],
-        [name]: value
+        ...values
       }
       return prev;
     });
+  }
+  
 
+  const handleChangePopup = (e) => {
+    const { name, value, id } = e.target;
+    setIdSelection(id);
     setValues({
       [name]: value,
     });
   };
 
-  const handleGroupChangePopup = (e) => {
-    const {name, value, id} = e.target;
+  const handleSubmitGroupTooltip = (e) => {
+    e.preventDefault();
     let childIDList = [];
-    console.log("id: ", id);
-    console.log("value:    ", value);
     setData((prev) => {
-      console.log("prev", prev);
       let idx;
       prev.forEach((dt, index) => {
-        if (dt.isGroup && dt.id === id) {
+        if (dt.isGroup && dt.id === idGroupSelection) {
           idx = index;
           childIDList = dt.childIDList;
         }
       })
       prev[idx] = {
         ...prev[idx],
-        [name]: value,
+        ...grpvalues,
       }
       return prev;
     });
 
+    data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+      dt.selections[0].group = grpvalues.name
+      }
+    });
+  }
+
+  const handleGroupChangePopup = (e) => {
+    const {name, value, id} = e.target;
+    console.log("id: ", id);
+    console.log("value:    ", value);
+    setIdGroupSelection(id);
     setGrpValues({
       [name]: value,
     });
-
-    data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
-      dt.selections[0].group = value
-      }
-    });
-
   };
 
   return (
@@ -336,11 +402,15 @@ const FormInput = () => {
       <Tooltip
         info={infoPopup}
         handleChangePopup={handleChangePopup}
+        handleSubmitTooltip={handleSubmitTooltip}
+        removeHighlightTextSelected={removeHighlightTextSelected}
         values={values}
       />
       <GroupTooltip
         info={infoGrpPopup}
         handleGroupChangePopup={handleGroupChangePopup}
+        handleSubmitGroupTooltip={handleSubmitGroupTooltip}
+        removeHighlightTextSelected={removeHighlightTextSelected}
         values={grpvalues}
       />
     </>
