@@ -31,6 +31,7 @@ const FormInput = () => {
     name: "",
   });
   const [idGroupSelection, setIdGroupSelection] = useState("");
+  const [isDisabled, setIsDisabled] = useState(false);
 
   const el = (sel, par) => (par || document).querySelector(sel);
   const elPopup = el("#tooltip");
@@ -215,14 +216,44 @@ const FormInput = () => {
     console.log("LINE NUM: ", lineNum)
     console.log("ID: ", id)
     console.log("data: ", data);
-    const removed = data.filter((dt) => dt.selections[0]?.id !== id)
+    const removed = data.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)
     console.log("removed: ", removed)
     if (!isGroup) {
       setData((prev) => {
-        return [...prev.filter((dt) => dt.selections[0]?.id !== id)]
+        return [...prev.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)]
       })
     } else {
-      
+      // setData((prev) => {
+      //   prev.forEach((dt, index) => {
+      //     console.log("dt", dt);
+      //     if (dt.isGroup === undefined && dt[index].selections[0].group === group) {
+      //       dt[index].selections[0] = {
+      //         ...dt[index].selections[0],
+      //         group: ""
+      //       }
+      //     }
+      //   })
+      //   return [...prev];
+        let childIDList = [];
+        // let groupName = "";
+        setData((prev) => {
+          let idx;
+          prev.forEach((dt, index) => {
+            if (dt.isGroup && dt.id === id) {
+              idx = index;
+              childIDList = dt.childIDList;
+              // groupName = dt.name;
+            }
+          })
+          delete prev[idx];
+          return prev;
+        });
+
+        data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+          // dt.selections[0].group = dt.selections[0].group.split(groupName).j
+          dt.selections[0].group = ""
+          }
+        });
     }
     
     // if (flag) {
@@ -316,6 +347,7 @@ const FormInput = () => {
           display: `none`,
         });
       }
+      setIsDisabled(false);
 
       if (grPopup) {
         Object.assign(grPopup.style, {
@@ -328,19 +360,28 @@ const FormInput = () => {
 
   const handleSubmitTooltip = (e, lineNum) => {
     e.preventDefault();
-    setData((prev) => {
-      let idx;
-      prev.forEach((dt, index) => {
-        if (dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
-          idx = index;
-        }
-      })
-      prev[idx].selections[0] = {
-        ...prev[idx].selections[0],
-        ...values
+    try {
+      if (isDisabled) {
+        setData((prev) => {
+          let idx;
+          prev.forEach((dt, index) => {
+            if (dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
+              idx = index;
+            }
+          })
+          prev[idx].selections[0] = {
+            ...prev[idx].selections[0],
+            ...values
+          }
+          return prev;
+        });
       }
-      return prev;
-    });
+    } catch (error) {
+      console.log("error: ", error)
+    } finally {
+      setIsDisabled(false)
+    }
+    
   }
   
 
@@ -350,30 +391,40 @@ const FormInput = () => {
     setValues({
       [name]: value,
     });
+    setIsDisabled(true);
   };
 
   const handleSubmitGroupTooltip = (e) => {
     e.preventDefault();
-    let childIDList = [];
-    setData((prev) => {
-      let idx;
-      prev.forEach((dt, index) => {
-        if (dt.isGroup && dt.id === idGroupSelection) {
-          idx = index;
-          childIDList = dt.childIDList;
-        }
-      })
-      prev[idx] = {
-        ...prev[idx],
-        ...grpvalues,
-      }
-      return prev;
-    });
+    try {
+      if (isDisabled) {
+        let childIDList = [];
+        setData((prev) => {
+          let idx;
+          prev.forEach((dt, index) => {
+            if (dt.isGroup && dt.id === idGroupSelection) {
+              idx = index;
+              childIDList = dt.childIDList;
+            }
+          })
+          prev[idx] = {
+            ...prev[idx],
+            ...grpvalues,
+          }
+          return prev;
+        });
 
-    data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
-      dt.selections[0].group = grpvalues.name
+        data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+          dt.selections[0].group = grpvalues.name
+          }
+        });
       }
-    });
+    } catch (error) {
+      console.log("error: ", error);
+    } finally {
+      setIsDisabled(false)
+    }
+    
   }
 
   const handleGroupChangePopup = (e) => {
@@ -384,6 +435,7 @@ const FormInput = () => {
     setGrpValues({
       [name]: value,
     });
+    setIsDisabled(true);
   };
 
   return (
@@ -405,6 +457,7 @@ const FormInput = () => {
         handleSubmitTooltip={handleSubmitTooltip}
         removeHighlightTextSelected={removeHighlightTextSelected}
         values={values}
+        isDisabled={isDisabled}
       />
       <GroupTooltip
         info={infoGrpPopup}
@@ -412,6 +465,7 @@ const FormInput = () => {
         handleSubmitGroupTooltip={handleSubmitGroupTooltip}
         removeHighlightTextSelected={removeHighlightTextSelected}
         values={grpvalues}
+        isDisabled={isDisabled}
       />
     </>
   );

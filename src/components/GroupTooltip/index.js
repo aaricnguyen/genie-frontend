@@ -8,7 +8,8 @@ const GroupTooltip =
   handleGroupChangePopup = () => {}, 
   handleSubmitGroupTooltip = () => {}, 
   removeHighlightTextSelected = () => {},
-  values
+  values,
+  isDisabled
 }) => {
   const { id = "", lineNum = "", group = "" } = info;
   return (
@@ -29,7 +30,7 @@ const GroupTooltip =
           </div>
 
           <div className={styles.btnGroup}>
-            <button className={styles.btnSave} onClick={handleSubmitGroupTooltip}>Save</button>
+            <button className={styles.btnSave} disabled={!isDisabled} onClick={handleSubmitGroupTooltip}>Save</button>
             <button className={styles.btnUngroup} onClick={(e) => {removeHighlightTextSelected(e, lineNum, id, true, group)}}>Ungroup</button>
           </div>
         </form>

@@ -8,7 +8,8 @@ const Tooltip =
   handleChangePopup = () => {}, 
   handleSubmitTooltip = () => {}, 
   removeHighlightTextSelected = () => {},
-  values 
+  values,
+  isDisabled
 }) => {
   const { id = "", lineNum = "", group = "", value = "", start = "", end = "" } = info;
   return (
@@ -112,7 +113,7 @@ const Tooltip =
           </div>
 
           <div className={styles.btnGroup}>
-            <button className={styles.btnSave} onClick={(e) => handleSubmitTooltip(e, lineNum)}>Save</button>
+            <button className={styles.btnSave} disabled={!isDisabled} onClick={(e) => handleSubmitTooltip(e, lineNum)}>Save</button>
             <button className={styles.btnUnselect} onClick={(e) => removeHighlightTextSelected(e, lineNum, id, false, group)}>Unselect</button>
           </div>
         </form>

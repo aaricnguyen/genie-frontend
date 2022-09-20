@@ -92,9 +92,16 @@
   border: none;
   cursor: pointer;
   transition: all .5s ease;
+  border-radius: 15px;
 }
 .btnSave:hover {
   background: #0353A8;
+}
+.btnSave:disabled,
+.btnSave[disabled]{
+  border: 1px solid #D8DBDE;
+  background: #E9EBEC;
+  color: #535B62;
 }
 .btnUnselect {
   background: #D4371C;
@@ -107,6 +114,7 @@
   border: none;
   cursor: pointer;
   transition: all .5s ease;
+  border-radius: 15px;
 }
 .btnUnselect:hover {
   background: #AF2D17;
