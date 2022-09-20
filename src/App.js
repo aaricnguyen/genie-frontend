@@ -164,7 +164,7 @@ function App() {
   };
   const testPy = (e) => {
     e.preventDefault();
-    
+    setTestParser("");
     let parserPy = new Blob([JSON.stringify(python)], {
       type: "text/plain",
     });
@@ -194,8 +194,6 @@ function App() {
         console.log(res.data);
         setTestParser(JSON.stringify(res.data, undefined, 1))
       })
-    
- 
   };
 
   // const createFilePy = (file) => {
@@ -219,6 +217,8 @@ function App() {
   // }, [python]);
   const generatePy = async (formData) => {
     try {
+      setTestParser("");
+      setPython("");
       const { data, status } = await axios({
         url: "http://10.78.96.78:5001/api/parser?cli_command=show version",
         method: "POST",

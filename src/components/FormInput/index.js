@@ -209,6 +209,16 @@ const FormInput = () => {
       pa.insertBefore(unselect.firstChild, unselect);
     }
     unselect.remove();
+    if (elPopup) {
+      Object.assign(elPopup.style, {
+        display: `none`,
+      });
+    }
+    if (grPopup) {
+      Object.assign(grPopup.style, {
+        display: `none`,
+      });
+    }
     removeSelection(lineNum, id, isGroup, group);
   }
 
