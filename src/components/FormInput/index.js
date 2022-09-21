@@ -243,7 +243,7 @@ const FormInput = () => {
       setData((prev) => {
         let idx;
         prev.forEach((dt, index) => {
-          if (dt.isGroup === undefined && dt.selections[0]?.id === id) {
+          if (dt != undefined && dt.isGroup === undefined && dt.selections[0]?.id === id) {
             idx = index;
           }
         })
@@ -267,7 +267,7 @@ const FormInput = () => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt.isGroup && dt.id === id) {
+            if (dt != undefined && dt.isGroup && dt.id === id) {
               idx = index;
               childIDList = dt.childIDList;
               // groupName = dt.name;
@@ -278,13 +278,12 @@ const FormInput = () => {
           return prev;
         });
 
-        data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+        data.forEach((dt) => { if (dt != undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
           // dt.selections[0].group = dt.selections[0].group.split(groupName).j
           dt.selections[0].group = ""
           }
         });
     }
-    
     // if (flag) {
     //   setData((prev) => {
     //     let next;
@@ -363,8 +362,7 @@ const FormInput = () => {
       let results = {};
       console.log ("data", data);
       data.forEach ((dt) => {
-        console.log ("is Group", dt.isGroup);
-        if (dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
+        if (dt != undefined && dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
       });
 
       console.log('results ...', results);
@@ -394,7 +392,7 @@ const FormInput = () => {
       });
       let results;
       data.forEach ((dt) => {
-        if (dt.isGroup && dt.id === e.target.id) {results = dt};
+        if (dt != undefined && dt.isGroup && dt.id === e.target.id) {results = dt};
       });
 
       console.log('results ...', results);
@@ -432,7 +430,7 @@ const FormInput = () => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
+            if (dt != undefined && dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
               idx = index;
             }
           })
@@ -469,7 +467,7 @@ const FormInput = () => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt.isGroup && dt.id === idGroupSelection) {
+            if (dt != undefined && dt.isGroup && dt.id === idGroupSelection) {
               idx = index;
               childIDList = dt.childIDList;
             }
@@ -481,7 +479,7 @@ const FormInput = () => {
           return prev;
         });
 
-        data.forEach((dt) => { if (dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+        data.forEach((dt) => { if (dt != undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
           dt.selections[0].group = grpvalues.name
           }
         });
