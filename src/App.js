@@ -305,8 +305,8 @@ function App() {
               <textarea
                 className="export-json"
                 style={{ height: "300px", resize: "none", outline: "none" }}
-                // value={json}
-                >{json}
+                value={json}
+                >
               </textarea>
             </div>
           </div>
