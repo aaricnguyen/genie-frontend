@@ -17,7 +17,7 @@ const GroupTooltip =
       <div className={styles.tooltipInfo}>
         <form className={styles.formWrapper} onSubmit={handleSubmitGroupTooltip}>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Group Name</label>
+            <label className={styles.formLabel} htmlFor="name">Group Name</label>
             <input 
               type="text"
               placeholder=" "

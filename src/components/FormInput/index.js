@@ -228,14 +228,14 @@ const FormInput = () => {
     console.log("data: ", data);
     // const removed = data.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)
     // console.log("removed: ", removed)
-    let idx;
-    data.forEach((dt, index) => {
-      if (dt.isGroup === undefined && dt.selections[0]?.id === id) {
-        idx = index;
-      }
-    })
-    delete data[idx];
-    console.log("removed: ", data);
+    // let idx;
+    // data.forEach((dt, index) => {
+    //   if (dt.isGroup === undefined && dt.selections[0]?.id === id) {
+    //     idx = index;
+    //   }
+    // })
+    // delete data[idx];
+    // console.log("removed: ", data);
     if (!isGroup) {
       // setData((prev) => {
       //   return [...prev.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)]
@@ -247,7 +247,7 @@ const FormInput = () => {
             idx = index;
           }
         })
-        delete prev[idx];
+        prev.splice(idx, 1);
         return prev;
       })
     } else {
@@ -273,7 +273,8 @@ const FormInput = () => {
               // groupName = dt.name;
             }
           })
-          delete prev[idx];
+          // delete prev[idx];
+          prev.splice(idx, 1);
           return prev;
         });
 
@@ -359,7 +360,7 @@ const FormInput = () => {
         display: `block`,
       });
 
-      let results;
+      let results = {};
       console.log ("data", data);
       data.forEach ((dt) => {
         console.log ("is Group", dt.isGroup);
@@ -367,14 +368,18 @@ const FormInput = () => {
       });
 
       console.log('results ...', results);
-      let lineNum = results.lineNum;
-      let newArray = results.selections;
+      if (results) {
+        let lineNum = results.lineNum;
+        let newArray = results.selections;
 
-      console.log('line Num ...', results.lineNum);
-      console.log('selection ...', results.selections);
+        console.log('line Num ...', results.lineNum);
+        console.log('selection ...', results.selections);
 
-      setInfoPopup({ lineNum, ...newArray[0] });
-      setValues({ ...newArray[0]});
+        setInfoPopup({ lineNum, ...newArray[0] });
+        setValues({ ...newArray[0]});
+      }
+      
+      
     } 
     else if (className === "groupselect") {
       if (elPopup) {
