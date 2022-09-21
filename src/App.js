@@ -243,57 +243,9 @@ function App() {
     return group.some((val) => val.includes(str));
   };
 
-  const exportData = async (newData) => {
-    await axios
-      .delete("http://localhost:3005/api/delete")
-      .then((res) => {
-        if (res.status === 200) {
-          console.log("Delete successfully");
-          const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(
-            JSON.stringify(newData)
-          )}`;
-          const link = document.createElement("a");
-          link.href = jsonString;
-          link.download = "sample.json";
-
-          link.click();
-        }
-      })
-      .then(async () => {
-        axios.get("http://localhost:3005/api/check").then(async (res) => {
-          if (res.data) {
-            console.log("IT'S WORKS");
-            setPython("");
-            const parser = await axios.get("http://localhost:3005/api/parser");
-            const python = await axios.get("http://localhost:3005/api/python");
-            setPython(python.data);
-            console.log(parser);
-          }
-        });
-      });
-  };
-
-  async function getPython() {
-    try {
-      const response = await axios.get("http://localhost:3005/api/python");
-      console.log(response);
-      setPython(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   async function deleteFile() {
     try {
       const response = await axios.get("http://localhost:3005/api/delete");
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  async function getJava() {
-    try {
-      const response = await axios.get("http://localhost:3005/api/parser");
       console.log(response);
     } catch (error) {
       console.error(error);
@@ -305,17 +257,6 @@ function App() {
     const { value } = e.target;
     let splitArray = value.split("\n");
     setText(splitArray);
-  };
-
-  const showFile = async (e) => {
-    e.preventDefault();
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const text = e.target.result;
-      console.log(text);
-      setPython(text);
-    };
-    reader.readAsText(e.target.files[0]);
   };
 
   return (
@@ -364,8 +305,8 @@ function App() {
               <textarea
                 className="export-json"
                 style={{ height: "300px", resize: "none", outline: "none" }}
-                value={json}
-                >
+                // value={json}
+                >{json}
               </textarea>
             </div>
           </div>

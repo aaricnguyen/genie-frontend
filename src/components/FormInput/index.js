@@ -298,14 +298,43 @@ const FormInput = () => {
     setText(splitArray);
   };
 
+  // const handleClickGroup = (e) => {
+  //   const { offsetLeft, offsetTop, className, innerText } = e.target;
+  //   if (className === "groupselect") {
+  //     Object.assign(grPopup.style, {
+  //       left: `${offsetLeft+15}px`,
+  //       top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y+28}px`,
+  //       display: `block`,
+  //     });
+  //     let results;
+  //     data.forEach ((dt) => {
+  //       if (dt.isGroup && dt.id === e.target.id) {results = dt};
+  //     });
+
+  //     console.log('results ...', results);
+  //     // let lineNum = results.lineNum;
+  //     if (results !== undefined) {
+  //       let newArray = results;
+  //       let name = results.name;
+
+  //       setGrpInfoPopup({name, ...newArray});
+  //       setGrpValues({...newArray});
+  //     }
+  //   }
+  // }
+
   const handleMouseMove = (e) => {
     const { offsetLeft, offsetTop, className, innerText } = e.target;
-    // var lineNum = text.findIndex((val) => val.includes(innerText)) + 1;
     // console.log("offsetLeft: ", offsetLeft)
     // console.log("offsetTop: ", offsetTop)
     // console.log("clientY", document.getElementById('editable').clientY)
     // console.log("clientTop", document.getElementById('editable').clientTop)
     if (className === "highlight") {
+      if (grPopup) {
+        Object.assign(grPopup.style, {
+          display: `none`,
+        });
+      }
       Object.assign(elPopup.style, {
         left: `${offsetLeft}px`,
         top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y + 28}px`,
@@ -330,6 +359,12 @@ const FormInput = () => {
       setValues({ ...newArray[0]});
     } 
     else if (className === "groupselect") {
+      if (elPopup) {
+        Object.assign(elPopup.style, {
+          display: `none`,
+        });
+      }
+      
       Object.assign(grPopup.style, {
         left: `${offsetLeft+15}px`,
         top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y+28}px`,
@@ -352,12 +387,12 @@ const FormInput = () => {
     }
     else
     {
+      setIsDisabled(false);
       if (elPopup) {
         Object.assign(elPopup.style, {
           display: `none`,
         });
       }
-      setIsDisabled(false);
 
       if (grPopup) {
         Object.assign(grPopup.style, {
@@ -459,7 +494,8 @@ const FormInput = () => {
         onMouseUp={(e) => {
           getSeclection(e);
         }}
-        onMouseMove={handleMouseMove}
+        // onMouseMove={handleMouseMove}
+        onClick={handleMouseMove}
       ></pre>
       <Tooltip
         info={infoPopup}
