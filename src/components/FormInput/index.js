@@ -226,11 +226,29 @@ const FormInput = () => {
     console.log("LINE NUM: ", lineNum)
     console.log("ID: ", id)
     console.log("data: ", data);
-    const removed = data.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)
-    console.log("removed: ", removed)
+    // const removed = data.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)
+    // console.log("removed: ", removed)
+    let idx;
+    data.forEach((dt, index) => {
+      if (dt.isGroup === undefined && dt.selections[0]?.id === id) {
+        idx = index;
+      }
+    })
+    delete data[idx];
+    console.log("removed: ", data);
     if (!isGroup) {
+      // setData((prev) => {
+      //   return [...prev.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)]
+      // })
       setData((prev) => {
-        return [...prev.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)]
+        let idx;
+        prev.forEach((dt, index) => {
+          if (dt.isGroup === undefined && dt.selections[0]?.id === id) {
+            idx = index;
+          }
+        })
+        delete prev[idx];
+        return prev;
       })
     } else {
       // setData((prev) => {
@@ -298,6 +316,31 @@ const FormInput = () => {
     setText(splitArray);
   };
 
+  // const handleClickGroup = (e) => {
+  //   const { offsetLeft, offsetTop, className, innerText } = e.target;
+  //   if (className === "groupselect") {
+  //     Object.assign(grPopup.style, {
+  //       left: `${offsetLeft+15}px`,
+  //       top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y+28}px`,
+  //       display: `block`,
+  //     });
+  //     let results;
+  //     data.forEach ((dt) => {
+  //       if (dt.isGroup && dt.id === e.target.id) {results = dt};
+  //     });
+
+  //     console.log('results ...', results);
+  //     // let lineNum = results.lineNum;
+  //     if (results !== undefined) {
+  //       let newArray = results;
+  //       let name = results.name;
+
+  //       setGrpInfoPopup({name, ...newArray});
+  //       setGrpValues({...newArray});
+  //     }
+  //   }
+  // }
+
   const handleMouseMove = (e) => {
     const { offsetLeft, offsetTop, className, innerText } = e.target;
     // console.log("offsetLeft: ", offsetLeft)
@@ -339,7 +382,6 @@ const FormInput = () => {
           display: `none`,
         });
       }
-
       Object.assign(grPopup.style, {
         left: `${offsetLeft+15}px`,
         top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y+28}px`,
