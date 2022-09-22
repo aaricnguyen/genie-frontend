@@ -8,7 +8,6 @@ import FormInput from "./components/FormInput";
 import styles from "./App.module.css";
 
 function App() {
-  const [highlight, setHighlight] = useState("");
   const [text, setText] = useState([]);
   const [json, setJson] = useState([]);
   const [group, setGroup] = useState([]);
@@ -17,6 +16,8 @@ function App() {
   const [cliText, setCliText] = useState({});
   const [cliJson, setCliJson] = useState({});
   const [testParser, setTestParser] = useState("");
+  const [isDisabled, setIsDisabled] = useState(true);
+  const [cliCommand, setCliCommand] = useState("");
   const myRef = React.createRef();
 
   const format = (e, test) => {
@@ -183,7 +184,7 @@ function App() {
     formData.append("cli_output_file", cliText, "showversion.txt");
 
     axios({
-        url: "http://10.78.96.78:5001/api/test?cli_command=show version",
+        url: `http://10.78.96.78:5001/api/test?cli_command=${cliCommand}`,
         method: "POST",
         // headers: {
         //   "Access-Control-Allow-Origin": "No",
@@ -220,7 +221,7 @@ function App() {
       setTestParser("");
       setPython("");
       const { data, status } = await axios({
-        url: "http://10.78.96.78:5001/api/parser?cli_command=show version",
+        url: `http://10.78.96.78:5001/api/parser?cli_command=${cliCommand}`,
         method: "POST",
         // headers: {
         //   "Access-Control-Allow-Origin": "No",
@@ -252,11 +253,17 @@ function App() {
     }
   }
 
-  const handleChange = (e) => {
-    console.log(e.target.value);
+  useEffect(() => {
+    if (cliCommand) {
+      setIsDisabled(false);
+    } else {
+      setIsDisabled(true);
+    }
+  }, [cliCommand])
+
+  const handleChangeCLI = (e) => {
     const { value } = e.target;
-    let splitArray = value.split("\n");
-    setText(splitArray);
+    setCliCommand(value);
   };
 
   return (
@@ -283,13 +290,15 @@ function App() {
               <input
                 type="text"
                 placeholder="CLI command"
+                name="cliCommand"
                 className={styles.formControl}
+                onChange={handleChangeCLI}
               />
             </div>
-            <button className="btn-export" onClick={(e) => format(e, data)}>
+            <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabled}>
               Generate
             </button>
-            <button className="btn-export" onClick={(e)=>testPy(e)}>
+            <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabled}>
               Test
             </button>
           </form>
@@ -311,7 +320,7 @@ function App() {
             </div>
           </div>
           <div className={styles.regexRight}>
-            <Highlight json={json} python={python} testParser={testParser} />
+            <Highlight python={python} testParser={testParser} />
           </div>
         </section>
       </div>

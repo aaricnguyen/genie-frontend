@@ -18,7 +18,7 @@ const FormInput = () => {
   const [infoPopup, setInfoPopup] = useState({});
   const [idSelection, setIdSelection] = useState("");
   const [values, setValues] = useState({
-    type: "One Word",
+    type: "",
     name: "",
     group: "",
     regex: "",
@@ -51,8 +51,6 @@ const FormInput = () => {
     return getOperatingSystem(window);
   }
 
-  console.log("OS: ", OS(window))
-
   // WIN
   let firstLineTopOffset = 31;
   let lineHeightOffset = 15;
@@ -60,7 +58,6 @@ const FormInput = () => {
 
   /* MAC */
   if (OS(window) === 'MacOS') {
-    console.log("IT'S WORK")
     firstLineTopOffset = 29;
     lineHeightOffset = 15;
     charOffsetWidth = 7.8;
@@ -243,7 +240,7 @@ const FormInput = () => {
       setData((prev) => {
         let idx;
         prev.forEach((dt, index) => {
-          if (dt != undefined && dt.isGroup === undefined && dt.selections[0]?.id === id) {
+          if (dt !== undefined && dt.isGroup === undefined && dt.selections[0]?.id === id) {
             idx = index;
           }
         })
@@ -278,7 +275,7 @@ const FormInput = () => {
           return prev;
         });
 
-        data.forEach((dt) => { if (dt != undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+        data.forEach((dt) => { if (dt !== undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
           // dt.selections[0].group = dt.selections[0].group.split(groupName).j
           dt.selections[0].group = ""
           }

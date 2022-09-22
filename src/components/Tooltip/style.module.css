@@ -102,6 +102,7 @@
   border: 1px solid #D8DBDE;
   background: #E9EBEC;
   color: #535B62;
+  cursor: not-allowed;
 }
 .btnUnselect {
   background: #D4371C;
