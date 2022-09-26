@@ -19,7 +19,8 @@ function App() {
   const [isDisabledGenerate, setIsDisabledGenerate] = useState(true);
   const [isDisabledTest, setIsDisabledTest] = useState(true);
   const [cliCommand, setCliCommand] = useState("");
-  const myRef = React.createRef();
+  // const myRef = React.createRef();
+
   const format = (e, test) => {
     e.preventDefault();
     console.log("data: ", data);
@@ -156,12 +157,13 @@ function App() {
     // element.download = "myFile.json";
     // element.click();
     let formData = new FormData();
-    formData.append("json_output_file", cliJson, "showversion.json");
-    formData.append("cli_output_file", cliText, "showversion.txt");
+    formData.append("json_output_file", cliJson, `${cliCommand.replace(/\s+/g, '')}.json`);
+    formData.append("cli_output_file", cliText, `${cliCommand.replace(/\s+/g, '')}.txt`);
     generatePy(formData);
 
     // exportData(newTest);
   };
+
   const testPy = (e) => {
     e.preventDefault();
     setTestParser("");
@@ -179,42 +181,18 @@ function App() {
 
     let formData = new FormData();
     formData.append("parser_output_file", parserPyFile, "parser_N.py");
-    formData.append("json_output_file", cliJson, "showversion.json");
-    formData.append("cli_output_file", cliText, "showversion.txt");
+    formData.append("json_output_file", cliJson, `${cliCommand.replace(/\s+/g, '')}.json`);
+    formData.append("cli_output_file", cliText, `${cliCommand.replace(/\s+/g, '')}.txt`);
 
     axios({
         url: `http://10.78.96.78:5001/api/test?cli_command=${cliCommand}`,
         method: "POST",
-        // headers: {
-        //   "Access-Control-Allow-Origin": "No",
-        //   "Content-Type": "multipart/form-data",
-        // },
         data: formData,
       }).then((res)=>{
         console.log(res.data);
         setTestParser(JSON.stringify(res.data, undefined, 1))
       })
   };
-
-  // const createFilePy = (file) => {
-  //   let parserPy = new Blob([JSON.stringify(file)], {
-  //     type: "text/plain",
-  //   });
-  //   let parserPyFile = new File([parserPy], "parser_file", {
-  //     lastModified: new Date(),
-  //     type: "text/plain",
-  //   });
-
-  //   let formData = new FormData();
-  //   formData.append("parser_output_file", parserPyFile, "parser_N.py");
-  //   return formData;
-  // };
-
-  // useEffect(() => {
-  //   if (python) {
-  //     const formData = createFilePy(python);
-  //   }
-  // }, [python]);
   const generatePy = async (formData) => {
     try {
       setTestParser("");
@@ -222,10 +200,6 @@ function App() {
       const { data, status } = await axios({
         url: `http://10.78.96.78:5001/api/parser?cli_command=${cliCommand}`,
         method: "POST",
-        // headers: {
-        //   "Access-Control-Allow-Origin": "No",
-        //   "Content-Type": "multipart/form-data",
-        // },
         data: formData,
       });
       if (status === 200) {
