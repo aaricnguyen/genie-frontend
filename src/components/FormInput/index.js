@@ -264,7 +264,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt != undefined && dt.isGroup && dt.id === id) {
+            if (dt !== undefined && dt.isGroup && dt.id === id) {
               idx = index;
               childIDList = dt.childIDList;
               // groupName = dt.name;
@@ -296,21 +296,19 @@ const FormInput = ({ text = [], setText = () => {} }) => {
 
   const handleChange = (e) => {
     const { textContent } = e.currentTarget;
-    const element = document.createElement("a");
     const cli_output_text = new Blob([textContent], { type: "text/plain" });
-    // var data = new FormData();
-    //  data.append("file", cli_output_text);
     var file = new File([cli_output_text], "cli_output_text", {lastModified: new Date(),type: "text/plain"});
     console.log(file);
     setCliText(file);
-
-    // element.href = URL.createObjectURL(file);
-    // element.download = "myFile.txt";
-    // element.click();
     console.log(cli_output_text);
 
     let splitArray = textContent.split("\n");
-    setText(splitArray);
+    if (textContent) {
+      setText(splitArray);
+    } else {
+      setText([]);
+    }
+    
   };
 
   // const handleClickGroup = (e) => {
@@ -339,7 +337,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
   // }
 
   const handleMouseMove = (e) => {
-    const { offsetLeft, offsetTop, className, innerText } = e.target;
+    const { offsetLeft, className } = e.target;
     // console.log("offsetLeft: ", offsetLeft)
     // console.log("offsetTop: ", offsetTop)
     // console.log("clientY", document.getElementById('editable').clientY)
@@ -359,7 +357,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
       let results = {};
       console.log ("data", data);
       data.forEach ((dt) => {
-        if (dt != undefined && dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
+        if (dt !== undefined && dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
       });
 
       console.log('results ...', results);
@@ -389,7 +387,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
       });
       let results;
       data.forEach ((dt) => {
-        if (dt != undefined && dt.isGroup && dt.id === e.target.id) {results = dt};
+        if (dt !== undefined && dt.isGroup && dt.id === e.target.id) {results = dt};
       });
 
       console.log('results ...', results);
@@ -427,7 +425,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt != undefined && dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
+            if (dt !== undefined && dt.isGroup === undefined && dt.lineNum === lineNum && dt.selections[0].id === idSelection) {
               idx = index;
             }
           })
@@ -464,7 +462,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt != undefined && dt.isGroup && dt.id === idGroupSelection) {
+            if (dt !== undefined && dt.isGroup && dt.id === idGroupSelection) {
               idx = index;
               childIDList = dt.childIDList;
             }
@@ -476,7 +474,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
           return prev;
         });
 
-        data.forEach((dt) => { if (dt != undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+        data.forEach((dt) => { if (dt !== undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
           dt.selections[0].group = grpvalues.name
           }
         });

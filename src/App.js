@@ -20,7 +20,6 @@ function App() {
   const [isDisabledTest, setIsDisabledTest] = useState(true);
   const [cliCommand, setCliCommand] = useState("");
   const myRef = React.createRef();
-
   const format = (e, test) => {
     e.preventDefault();
     console.log("data: ", data);

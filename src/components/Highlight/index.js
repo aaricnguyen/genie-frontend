@@ -7,8 +7,7 @@ const Highlight = ({ python = "", setPython = () => {}, testParser = "" }) => {
     const { value } = e.target;
     setPython(value);
   }
-
-  console.log("Text python: ", python)
+  
   return (
     <>
       <div className={styles.parserCode}>
