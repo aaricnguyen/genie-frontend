@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { uniqBy } from 'lodash';
+import { isEmpty } from "lodash";
 import { StoreContext } from "./context.js";
 import Highlight from "./components/Highlight";
 import FormInput from "./components/FormInput";
@@ -16,13 +16,13 @@ function App() {
   const [cliText, setCliText] = useState({});
   const [cliJson, setCliJson] = useState({});
   const [testParser, setTestParser] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [isDisabledGenerate, setIsDisabledGenerate] = useState(true);
+  const [isDisabledTest, setIsDisabledTest] = useState(true);
   const [cliCommand, setCliCommand] = useState("");
   const myRef = React.createRef();
 
   const format = (e, test) => {
     e.preventDefault();
-    console.log(text);
     console.log("data: ", data);
     let lines = test.map((item) => item.lineNum);
     let blocks = test.filter((item) => item.isBlock === true);
@@ -254,12 +254,17 @@ function App() {
   }
 
   useEffect(() => {
-    if (cliCommand) {
-      setIsDisabled(false);
+    if (cliCommand && !isEmpty(text)) {
+      setIsDisabledGenerate(false);
     } else {
-      setIsDisabled(true);
+      setIsDisabledGenerate(true);
     }
-  }, [cliCommand])
+    if (cliCommand && !isEmpty(json) && python) {
+      setIsDisabledTest(false);
+    } else {
+      setIsDisabledTest(true);
+    }
+  }, [cliCommand, text, json, python])
 
   const handleChangeCLI = (e) => {
     const { value } = e.target;
@@ -295,10 +300,10 @@ function App() {
                 onChange={handleChangeCLI}
               />
             </div>
-            <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabled}>
+            <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabledGenerate}>
               Generate
             </button>
-            <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabled}>
+            <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabledTest}>
               Test
             </button>
           </form>
@@ -307,7 +312,7 @@ function App() {
           <div className={styles.regexLeft}>
             <div className={styles.cliOutput}>
               <h2 className={styles.regexLeftTitle}>CLI Output</h2>
-              <FormInput />
+              <FormInput text={text} setText={setText} />
             </div>
             <div className="json" style={{ width: "100%", height: "100%" }}>
               <h2 className="json-title">JSON</h2>
