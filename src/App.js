@@ -325,7 +325,7 @@ function App() {
             </div>
           </div>
           <div className={styles.regexRight}>
-            <Highlight python={python} testParser={testParser} />
+            <Highlight python={python} setPython={setPython} testParser={testParser} />
           </div>
         </section>
       </div>
