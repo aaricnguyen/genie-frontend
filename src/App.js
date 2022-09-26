@@ -16,9 +16,10 @@ function App() {
   const [cliText, setCliText] = useState({});
   const [cliJson, setCliJson] = useState({});
   const [testParser, setTestParser] = useState("");
-  const [isDisabled, setIsDisabled] = useState(true);
+  const [isDisabledGenerate, setIsDisabledGenerate] = useState(true);
+  const [isDisabledTest, setIsDisabledTest] = useState(true);
   const [cliCommand, setCliCommand] = useState("");
-  const myRef = React.createRef();
+  // const myRef = React.createRef();
 
   const format = (e, test) => {
     e.preventDefault();
@@ -151,6 +152,7 @@ function App() {
       lastModified: new Date(),
       type: "application/json",
     });
+
     setCliJson(cliJson);
     // element.href = URL.createObjectURL(file);
     // console.log(element.href);
@@ -186,10 +188,6 @@ function App() {
     axios({
         url: `http://10.78.96.78:5001/api/test?cli_command=${cliCommand}`,
         method: "POST",
-        // headers: {
-        //   "Access-Control-Allow-Origin": "No",
-        //   "Content-Type": "multipart/form-data",
-        // },
         data: formData,
       }).then((res)=>{
         console.log(res.data);
@@ -197,25 +195,6 @@ function App() {
       })
   };
 
-  // const createFilePy = (file) => {
-  //   let parserPy = new Blob([JSON.stringify(file)], {
-  //     type: "text/plain",
-  //   });
-  //   let parserPyFile = new File([parserPy], "parser_file", {
-  //     lastModified: new Date(),
-  //     type: "text/plain",
-  //   });
-
-  //   let formData = new FormData();
-  //   formData.append("parser_output_file", parserPyFile, "parser_N.py");
-  //   return formData;
-  // };
-
-  // useEffect(() => {
-  //   if (python) {
-  //     const formData = createFilePy(python);
-  //   }
-  // }, [python]);
   const generatePy = async (formData) => {
     try {
       setTestParser("");
@@ -223,10 +202,6 @@ function App() {
       const { data, status } = await axios({
         url: `http://10.78.96.78:5001/api/parser?cli_command=${cliCommand}`,
         method: "POST",
-        // headers: {
-        //   "Access-Control-Allow-Origin": "No",
-        //   "Content-Type": "multipart/form-data",
-        // },
         data: formData,
       });
       if (status === 200) {
@@ -236,28 +211,16 @@ function App() {
       console.log(e);
     }
   };
-  function name(params) {
-    return deleteFile();
-  }
 
   const checkString = (str) => {
     return group.some((val) => val.includes(str));
   };
 
-  async function deleteFile() {
-    try {
-      const response = await axios.get("http://localhost:3005/api/delete");
-      console.log(response);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   useEffect(() => {
     if (cliCommand) {
-      setIsDisabled(false);
+      setIsDisabledGenerate(false);
     } else {
-      setIsDisabled(true);
+      setIsDisabledGenerate(true);
     }
   }, [cliCommand])
 
@@ -295,10 +258,10 @@ function App() {
                 onChange={handleChangeCLI}
               />
             </div>
-            <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabled}>
+            <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabledGenerate}>
               Generate
             </button>
-            <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabled}>
+            <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabledTest}>
               Test
             </button>
           </form>

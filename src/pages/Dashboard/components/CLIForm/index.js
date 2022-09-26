@@ -6,15 +6,12 @@ import GroupTooltip from "../GroupTooltip";
 
 import styles from "./style.module.css";
 
-const FormInput = () => {
-  const textRef = useRef("ABC");
+const CLIForm = () => {
+  const textRef = useRef();
   const { data, setData } = useContext(StoreContext);
   const { cliText, setCliText } = useContext(StoreContext);
-  const { group, setGroup } = useContext(StoreContext);
   const [text, setText] = useState([]);
   const [html, setHtml] = useState("");
-  const [count, setCount] = useState(0);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [infoPopup, setInfoPopup] = useState({});
   const [idSelection, setIdSelection] = useState("");
   const [values, setValues] = useState({
@@ -100,14 +97,6 @@ const FormInput = () => {
             if (cld.className==="groupselect") {return isGrpDuplicated = true}});
           console.log('isGrpDuplicated', isGrpDuplicated)
           console.log('isMultiLines', isMultiLines)
-
-          // console.log('tmpDiv', tmpDiv)
-          // console.log('tmpDiv offset top', tmpDiv.offsetTop)
-          // console.log('tmpDiv offset left', tmpDiv.offsetLeft)
-          // console.log('tmpDiv offset width', tmpDiv.offsetWidth)
-          // console.log('tmpDiv offset high', tmpDiv.offsetHeight)
-          // console.log('tmpDiv count child', tmpDiv.childElementCount)
-          // console.log('tmpDiv child list', tmpDiv.childNodes)
         }
       }
 
@@ -131,17 +120,9 @@ const FormInput = () => {
         console.log('text of lines', text[lines - 1]);
         start = round(selectedStr.offsetLeft/charOffsetWidth);
         end = start + window.getSelection().toString().length - 1;
-        // console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
-        // console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);  
       }
-
-      // console.log('get line, ', lines);
-      // console.log('start ', start);
-      // console.log('end ', end);
-      
-      
+  
       setData((prev) => {
-        console.log("prev", prev);
         if (isGroup && isGrpDuplicated === undefined) {
           return [
             ...prev,
@@ -179,8 +160,6 @@ const FormInput = () => {
         else {return [...prev]}
         
       });
-
-      // hightlightText(blocks, selID);
     }
   };
 
@@ -220,23 +199,7 @@ const FormInput = () => {
   }
 
   const removeSelection = (lineNum, id, isGroup, group) => {
-    console.log("LINE NUM: ", lineNum)
-    console.log("ID: ", id)
-    console.log("data: ", data);
-    // const removed = data.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)
-    // console.log("removed: ", removed)
-    // let idx;
-    // data.forEach((dt, index) => {
-    //   if (dt.isGroup === undefined && dt.selections[0]?.id === id) {
-    //     idx = index;
-    //   }
-    // })
-    // delete data[idx];
-    // console.log("removed: ", data);
     if (!isGroup) {
-      // setData((prev) => {
-      //   return [...prev.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)]
-      // })
       setData((prev) => {
         let idx;
         prev.forEach((dt, index) => {
@@ -248,29 +211,16 @@ const FormInput = () => {
         return prev;
       })
     } else {
-      // setData((prev) => {
-      //   prev.forEach((dt, index) => {
-      //     console.log("dt", dt);
-      //     if (dt.isGroup === undefined && dt[index].selections[0].group === group) {
-      //       dt[index].selections[0] = {
-      //         ...dt[index].selections[0],
-      //         group: ""
-      //       }
-      //     }
-      //   })
-      //   return [...prev];
         let childIDList = [];
         // let groupName = "";
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt != undefined && dt.isGroup && dt.id === id) {
+            if (dt !== undefined && dt.isGroup && dt.id === id) {
               idx = index;
               childIDList = dt.childIDList;
-              // groupName = dt.name;
             }
           })
-          // delete prev[idx];
           prev.splice(idx, 1);
           return prev;
         });
@@ -281,69 +231,21 @@ const FormInput = () => {
           }
         });
     }
-    // if (flag) {
-    //   setData((prev) => {
-    //     let next;
-    //     let find = prev.findIndex((val) => val.id === id && val.isGroup);
-    //     if (find !== -1) {
-    //       let deleted = prev.filter((dt) => dt.id !== id);
-    //       next = deleted.map((dt) => dt.selections[0].group === "")
-    //     }
-    //     return next;
-    //   })
-    // }
   }
 
   const handleChange = (e) => {
     const { textContent } = e.currentTarget;
-    const element = document.createElement("a");
     const cli_output_text = new Blob([textContent], { type: "text/plain" });
-    // var data = new FormData();
-    //  data.append("file", cli_output_text);
     var file = new File([cli_output_text], "cli_output_text", {lastModified: new Date(),type: "text/plain"});
-    console.log(file);
     setCliText(file);
-
-    // element.href = URL.createObjectURL(file);
-    // element.download = "myFile.txt";
-    // element.click();
     console.log(cli_output_text);
 
     let splitArray = textContent.split("\n");
     setText(splitArray);
   };
 
-  // const handleClickGroup = (e) => {
-  //   const { offsetLeft, offsetTop, className, innerText } = e.target;
-  //   if (className === "groupselect") {
-  //     Object.assign(grPopup.style, {
-  //       left: `${offsetLeft+15}px`,
-  //       top: `${e.clientY - document.getElementById('editable').getBoundingClientRect().y+28}px`,
-  //       display: `block`,
-  //     });
-  //     let results;
-  //     data.forEach ((dt) => {
-  //       if (dt.isGroup && dt.id === e.target.id) {results = dt};
-  //     });
-
-  //     console.log('results ...', results);
-  //     // let lineNum = results.lineNum;
-  //     if (results !== undefined) {
-  //       let newArray = results;
-  //       let name = results.name;
-
-  //       setGrpInfoPopup({name, ...newArray});
-  //       setGrpValues({...newArray});
-  //     }
-  //   }
-  // }
-
   const handleMouseMove = (e) => {
-    const { offsetLeft, offsetTop, className, innerText } = e.target;
-    // console.log("offsetLeft: ", offsetLeft)
-    // console.log("offsetTop: ", offsetTop)
-    // console.log("clientY", document.getElementById('editable').clientY)
-    // console.log("clientTop", document.getElementById('editable').clientTop)
+    const { offsetLeft, className } = e.target;
     if (className === "highlight") {
       if (grPopup) {
         Object.assign(grPopup.style, {
@@ -359,7 +261,7 @@ const FormInput = () => {
       let results = {};
       console.log ("data", data);
       data.forEach ((dt) => {
-        if (dt != undefined && dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
+        if (dt !== undefined && dt.isGroup === undefined && dt.selections[0].id === e.target.id) {results = dt};
       });
 
       console.log('results ...', results);
@@ -389,7 +291,7 @@ const FormInput = () => {
       });
       let results;
       data.forEach ((dt) => {
-        if (dt != undefined && dt.isGroup && dt.id === e.target.id) {results = dt};
+        if (dt !== undefined && dt.isGroup && dt.id === e.target.id) {results = dt};
       });
 
       console.log('results ...', results);
@@ -464,7 +366,7 @@ const FormInput = () => {
         setData((prev) => {
           let idx;
           prev.forEach((dt, index) => {
-            if (dt !== undefined && dt.isGroup && dt.id === idGroupSelection) {
+            if (dt != undefined && dt.isGroup && dt.id === idGroupSelection) {
               idx = index;
               childIDList = dt.childIDList;
             }
@@ -476,7 +378,7 @@ const FormInput = () => {
           return prev;
         });
 
-        data.forEach((dt) => { if (dt !== undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+        data.forEach((dt) => { if (dt != undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
           dt.selections[0].group = grpvalues.name
           }
         });
@@ -534,4 +436,4 @@ const FormInput = () => {
   );
 };
 
-export default FormInput;
+export default CLIForm;
