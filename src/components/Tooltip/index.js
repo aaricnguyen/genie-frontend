@@ -91,7 +91,7 @@ const Tooltip =
           <div className={styles.formGroup}>
             <label for="type" className={styles.formLabel}>Type </label>
             <select className={styles.formSelect} value={values.type} name="type" id={id} onChange={handleChangePopup}>
-              <option>Select type</option>
+              <option value="">Select type</option>
               <option value="IP Address">IP Address</option>
               <option value="Integer">Integer</option>
               <option value="Mac Address">Mac Address</option>
