@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
+import { AiOutlineClose } from 'react-icons/ai'
 import styles from './style.module.css';
 
 const Tooltip = 
@@ -8,13 +9,18 @@ const Tooltip =
   handleChangePopup = () => {}, 
   handleSubmitTooltip = () => {}, 
   removeHighlightTextSelected = () => {},
+  onClosePopup = () => {},
   values,
   isDisabled
 }) => {
   const { id = "", lineNum = "", group = "", value = "", start = "", end = "" } = info;
   return (
     <div className={styles.tooltip} id="tooltip">
+      <div className={styles.tooltipClose}>
+        <Link to="#" onClick={onClosePopup}><AiOutlineClose style={{ color: "#000000" }} /></Link>
+      </div>
       <div className={styles.tooltipInfo}>
+        <h3 className={styles.tooltipTitle}>Selected Info</h3>
         <div className={styles.tooltipGroup}>
           <p className={styles.tooltipText}>Line number:</p>
           <span>{lineNum}</span>

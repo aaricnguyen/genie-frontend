@@ -1,5 +1,6 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
+import { AiOutlineClose } from 'react-icons/ai'
 import styles from './style.module.css';
 
 const GroupTooltip = 
@@ -8,13 +9,18 @@ const GroupTooltip =
   handleGroupChangePopup = () => {}, 
   handleSubmitGroupTooltip = () => {}, 
   removeHighlightTextSelected = () => {},
+  onCloseGroupPopup = () => {},
   values,
   isDisabled
 }) => {
   const { id = "", lineNum = "", group = "" } = info;
   return (
     <div className={styles.tooltip} id="grouptooltip">
+      <div className={styles.tooltipClose}>
+        <Link to="#" onClick={onCloseGroupPopup}><AiOutlineClose style={{ color: "#000000" }} /></Link>
+      </div>
       <div className={styles.tooltipInfo}>
+        <h3 className={styles.tooltipTitle}>Group Selected Info</h3>
         <form className={styles.formWrapper} onSubmit={handleSubmitGroupTooltip}>
           <div className={styles.formGroup}>
             <label className={styles.formLabel} htmlFor="name">Group Name</label>

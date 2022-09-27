@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { BrowserRouter, Switch } from "react-router-dom";
 import { isEmpty } from "lodash";
 import { StoreContext } from "./context.js";
 import Highlight from "./components/Highlight";
 import FormInput from "./components/FormInput";
 
 import styles from "./App.module.css";
+
 
 function App() {
   const [text, setText] = useState([]);
@@ -19,7 +21,10 @@ function App() {
   const [isDisabledGenerate, setIsDisabledGenerate] = useState(true);
   const [isDisabledTest, setIsDisabledTest] = useState(true);
   const [cliCommand, setCliCommand] = useState("");
+  const [loadingTest, setLoadingTest] = useState(false);
+
   const myRef = React.createRef();
+
   const format = (e, test) => {
     e.preventDefault();
     console.log("data: ", data);
@@ -164,7 +169,9 @@ function App() {
   };
   const testPy = (e) => {
     e.preventDefault();
+    setLoadingTest(true)
     setTestParser("");
+    
     let parserPy = new Blob([JSON.stringify(python)], {
       type: "text/plain",
     });
@@ -193,6 +200,8 @@ function App() {
       }).then((res)=>{
         console.log(res.data);
         setTestParser(JSON.stringify(res.data, undefined, 1))
+      }).finally(() => {
+        setLoadingTest(false);
       })
   };
 
@@ -271,64 +280,68 @@ function App() {
   };
 
   return (
-    <StoreContext.Provider
-      value={{
-        data,
-        setData,
-        json,
-        setJson,
-        group,
-        setGroup,
-        cliText,
-        setCliText,
-        cliJson,
-        setCliJson,
-        testParser,
-        setTestParser,
-      }}
-    >
-      <div className="wrapper">
-        <section className={styles.controlsSection}>
-          <form className={styles.CLICommandForm}>
-            <div className={styles.formGroup}>
-              <input
-                type="text"
-                placeholder="CLI command"
-                name="cliCommand"
-                className={styles.formControl}
-                onChange={handleChangeCLI}
-              />
-            </div>
-            <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabledGenerate}>
-              Generate
-            </button>
-            <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabledTest}>
-              Test
-            </button>
-          </form>
-        </section>
-        <section className={styles.regexSection}>
-          <div className={styles.regexLeft}>
-            <div className={styles.cliOutput}>
-              <h2 className={styles.regexLeftTitle}>CLI Output</h2>
-              <FormInput text={text} setText={setText} />
-            </div>
-            <div className="json" style={{ width: "100%", height: "100%" }}>
-              <h2 className="json-title">JSON</h2>
-              <textarea
-                className="export-json"
-                style={{ height: "300px", resize: "none", outline: "none" }}
-                value={json}
-                >
-              </textarea>
-            </div>
+    <BrowserRouter>
+      <Switch>
+        <StoreContext.Provider
+          value={{
+            data,
+            setData,
+            json,
+            setJson,
+            group,
+            setGroup,
+            cliText,
+            setCliText,
+            cliJson,
+            setCliJson,
+            testParser,
+            setTestParser,
+          }}
+        >
+          <div className="wrapper">
+            <section className={styles.controlsSection}>
+              <form className={styles.CLICommandForm}>
+                <div className={styles.formGroup}>
+                  <input
+                    type="text"
+                    placeholder="CLI command"
+                    name="cliCommand"
+                    className={styles.formControl}
+                    onChange={handleChangeCLI}
+                  />
+                </div>
+                <button className="btn-export" onClick={(e) => format(e, data)} disabled={isDisabledGenerate}>
+                  Generate
+                </button>
+                <button className="btn-export" onClick={(e)=>testPy(e)} disabled={isDisabledTest}>
+                  Test
+                </button>
+              </form>
+            </section>
+            <section className={styles.regexSection}>
+              <div className={styles.regexLeft}>
+                <div className={styles.cliOutput}>
+                  <h2 className={styles.regexLeftTitle}>CLI Output</h2>
+                  <FormInput text={text} setText={setText} />
+                </div>
+                <div className="json" style={{ width: "100%", height: "100%" }}>
+                  <h2 className="json-title">JSON</h2>
+                  <textarea
+                    className="export-json"
+                    style={{ height: "300px", resize: "none", outline: "none" }}
+                    value={json}
+                    >
+                  </textarea>
+                </div>
+              </div>
+              <div className={styles.regexRight}>
+                <Highlight python={python} setPython={setPython} testParser={testParser} loadingTest={loadingTest} />
+              </div>
+            </section>
           </div>
-          <div className={styles.regexRight}>
-            <Highlight python={python} setPython={setPython} testParser={testParser} />
-          </div>
-        </section>
-      </div>
-    </StoreContext.Provider>
+        </StoreContext.Provider>
+      </Switch>
+    </BrowserRouter>
   );
 }
 

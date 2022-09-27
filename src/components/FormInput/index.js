@@ -219,6 +219,22 @@ const FormInput = ({ text = [], setText = () => {} }) => {
     removeSelection(lineNum, id, isGroup, group);
   }
 
+  const onClosePopup = () => {
+    if (elPopup) {
+      Object.assign(elPopup.style, {
+        display: `none`,
+      });
+    }
+  }
+
+  const onCloseGroupPopup = () => {
+    if (grPopup) {
+      Object.assign(grPopup.style, {
+        display: `none`,
+      });
+    }
+  }
+
   const removeSelection = (lineNum, id, isGroup, group) => {
     console.log("LINE NUM: ", lineNum)
     console.log("ID: ", id)
@@ -519,6 +535,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
         removeHighlightTextSelected={removeHighlightTextSelected}
         values={values}
         isDisabled={isDisabled}
+        onClosePopup={onClosePopup}
       />
       <GroupTooltip
         info={infoGrpPopup}
@@ -527,6 +544,7 @@ const FormInput = ({ text = [], setText = () => {} }) => {
         removeHighlightTextSelected={removeHighlightTextSelected}
         values={grpvalues}
         isDisabled={isDisabled}
+        onCloseGroupPopup={onCloseGroupPopup}
       />
     </>
   );
