@@ -66,6 +66,28 @@ textarea{
   color: #535B62;
   cursor: not-allowed;
 }
+.btn-reset {
+  background: #0076D5;
+  width: 60px;
+  height: 25px  ;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: all .5s ease;
+}
+.btn-reset:hover {
+  background: #0353A8;
+}
+.btn-reset:disabled,
+.btn-reset[disabled]{
+  border: 1px solid #D8DBDE;
+  background: #E9EBEC;
+  color: #535B62;
+  cursor: not-allowed;
+}
 /* ===== Scrollbar CSS ===== */
 /* Firefox */
 * {

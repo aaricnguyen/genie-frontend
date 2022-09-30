@@ -93,11 +93,18 @@ const FormInput = ({ text = [], setText = () => {} }) => {
           tmpDiv.setAttribute('id', tmpID);
           tmpDiv.appendChild(docFragment);
           // range.surroundContents(tmpDiv);
-          if (tmpDiv.textContent.includes("\n")) {isMultiLines = true};
-          if (tmpDiv.childElementCount > 0) {isGroup = true};
+          if (tmpDiv.textContent.includes("\n")) {
+            isMultiLines = true
+          };
+          if (tmpDiv.childElementCount > 0) {
+            isGroup = true
+          };
           tmpDiv.childNodes.forEach((cld) => {
             console.log('child node', cld.className)
-            if (cld.className==="groupselect") {return isGrpDuplicated = true}});
+            if (cld.className==="groupselect") {
+              return isGrpDuplicated = true
+            }
+          });
           console.log('isGrpDuplicated', isGrpDuplicated)
           console.log('isMultiLines', isMultiLines)
 
