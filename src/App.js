@@ -296,6 +296,8 @@ function App() {
     setJson([]);
     setPython("");
     setTestParser("");
+    setPythonError({});
+    setTestParserError({});
     document.getElementById("editable").textContent = ""
   }
 
