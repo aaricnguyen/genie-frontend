@@ -32,6 +32,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
   });
   const [idGroupSelection, setIdGroupSelection] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
+  const [textString, setTextString] = useState("");
 
   const el = (sel, par) => (par || document).querySelector(sel);
   const elPopup = el("#tooltip");
@@ -68,7 +69,6 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
     text.map((val) => (col += `<p>${val}</p>`));
     setHtml(col);
   }, [text]);
-
   const getSeclection = () => {
     let blocks = [];
     let lineNumStart = 0;
@@ -84,111 +84,116 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
     let range;
 
     if (window.getSelection().toString() !== "") {
-      if (window.getSelection) {
-        let selectionRange = window.getSelection();
-        if (selectionRange.rangeCount > 0) {
-          range = selectionRange.getRangeAt(0);
-          let docFragment = range.cloneContents();
-          tmpDiv = document.createElement("span");
-          tmpDiv.setAttribute('id', tmpID);
-          tmpDiv.appendChild(docFragment);
-          // range.surroundContents(tmpDiv);
-          if (tmpDiv.textContent.includes("\n")) {
-            isMultiLines = true
-          };
-          if (tmpDiv.childElementCount > 0) {
-            isGroup = true
-          };
-          tmpDiv.childNodes.forEach((cld) => {
-            console.log('child node', cld.className)
-            if (cld.className==="groupselect") {
-              return isGrpDuplicated = true
-            }
-          });
-          console.log('isGrpDuplicated', isGrpDuplicated)
-          console.log('isMultiLines', isMultiLines)
-
-          // console.log('tmpDiv', tmpDiv)
-          // console.log('tmpDiv offset top', tmpDiv.offsetTop)
-          // console.log('tmpDiv offset left', tmpDiv.offsetLeft)
-          // console.log('tmpDiv offset width', tmpDiv.offsetWidth)
-          // console.log('tmpDiv offset high', tmpDiv.offsetHeight)
-          // console.log('tmpDiv count child', tmpDiv.childElementCount)
-          // console.log('tmpDiv child list', tmpDiv.childNodes)
+      if (textString && textString === window.getSelection().toString()) {
+        console.log("IT'S WORK");
+        return;
+      } else {
+        setTextString(window.getSelection().toString());
+        if (window.getSelection) {
+          let selectionRange = window.getSelection();
+          if (selectionRange.rangeCount > 0) {
+            range = selectionRange.getRangeAt(0);
+            let docFragment = range.cloneContents();
+            tmpDiv = document.createElement("span");
+            tmpDiv.setAttribute('id', tmpID);
+            tmpDiv.appendChild(docFragment);
+            // range.surroundContents(tmpDiv);
+            if (tmpDiv.textContent.includes("\n")) {isMultiLines = true};
+            if (tmpDiv.childElementCount > 0) {
+              isGroup = true
+            };
+            tmpDiv.childNodes.forEach((cld) => {
+              console.log('child node', cld.className)
+              if (cld.className==="groupselect") {
+                return isGrpDuplicated = true
+              }
+            });
+            console.log('isGrpDuplicated', isGrpDuplicated)
+            console.log('isMultiLines', isMultiLines)
+  
+            // console.log('tmpDiv', tmpDiv)
+            // console.log('tmpDiv offset top', tmpDiv.offsetTop)
+            // console.log('tmpDiv offset left', tmpDiv.offsetLeft)
+            // console.log('tmpDiv offset width', tmpDiv.offsetWidth)
+            // console.log('tmpDiv offset high', tmpDiv.offsetHeight)
+            // console.log('tmpDiv count child', tmpDiv.childElementCount)
+            // console.log('tmpDiv child list', tmpDiv.childNodes)
+          }
         }
-      }
-
-      if (isGroup && isGrpDuplicated === undefined) {hightlightGroupSelected(tmpDiv, grpID, range)}
-      else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
-        hightlightTextSelected(tmpDiv, selID, range)}
-
-      let start;
-      let end;
-      let lines;
-      let grpChildIDList = [];
-
-      if (isGroup && isGrpDuplicated === undefined) {
-        tmpDiv.childNodes.forEach((chl) => {if (chl.className==="highlight") {grpChildIDList.push(chl.id)}});
-        console.log("list of child", grpChildIDList);
-      }
-      else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
-        console.log("get seletion:  ", document.getElementById(selID));
-        let selectedStr = document.getElementById(selID);
-        lines = round((selectedStr.offsetTop - firstLineTopOffset)/lineHeightOffset) +1;
-        console.log('text of lines', text[lines - 1]);
-        start = round(selectedStr.offsetLeft/charOffsetWidth);
-        end = start + window.getSelection().toString().length - 1;
-        // console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
-        // console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);  
-      }
-
-      // console.log('get line, ', lines);
-      // console.log('start ', start);
-      // console.log('end ', end);
-      
-      
-      setData((prev) => {
-        console.log("prev", prev);
+  
+        if (isGroup && isGrpDuplicated === undefined) {hightlightGroupSelected(tmpDiv, grpID, range)}
+        else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
+          hightlightTextSelected(tmpDiv, selID, range)}
+  
+        let start;
+        let end;
+        let lines;
+        let grpChildIDList = [];
+  
         if (isGroup && isGrpDuplicated === undefined) {
-          return [
-            ...prev,
-            { isGroup: isGroup,
-              id: grpID,
-              name: "",
-              childIDList: grpChildIDList,
-            },
-          ];
+          tmpDiv.childNodes.forEach((chl) => {if (chl.className==="highlight") {grpChildIDList.push(chl.id)}});
+          console.log("list of child", grpChildIDList);
         }
         else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
-          return [
-            ...prev,
-            {
-              isGroup: isGroup,
-              lineNum: lines,
-              selections: [
-                {
-                  id: selID,
-                  name: `Sel${Math.floor(1000 + Math.random() * 9000)}`,
-                  value: window.getSelection().toString(),
-                  start: start,
-                  end: end,
-                  type: "",
-                  regex: "",
-                  desc: "",
-                  group: "",
-                  optional: "no",
-                  ignore: "no",
-                },
-              ],
-            },
-          ];
+          console.log("get seletion:  ", document.getElementById(selID));
+          let selectedStr = document.getElementById(selID);
+          lines = round((selectedStr.offsetTop - firstLineTopOffset)/lineHeightOffset) +1;
+          console.log('text of lines', text[lines - 1]);
+          start = round(selectedStr.offsetLeft/charOffsetWidth);
+          end = start + window.getSelection().toString().length - 1;
+          // console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
+          // console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);  
         }
-        else {return [...prev]}
+  
+        // console.log('get line, ', lines);
+        // console.log('start ', start);
+        // console.log('end ', end);
         
-      });
-
-      // hightlightText(blocks, selID);
+        
+        setData((prev) => {
+          console.log("prev", prev);
+          if (isGroup && isGrpDuplicated === undefined) {
+            return [
+              ...prev,
+              { isGroup: isGroup,
+                id: grpID,
+                name: "",
+                childIDList: grpChildIDList,
+              },
+            ];
+          }
+          else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
+            return [
+              ...prev,
+              {
+                isGroup: isGroup,
+                lineNum: lines,
+                selections: [
+                  {
+                    id: selID,
+                    name: `Sel${Math.floor(1000 + Math.random() * 9000)}`,
+                    value: window.getSelection().toString(),
+                    start: start,
+                    end: end,
+                    type: "",
+                    regex: "",
+                    desc: "",
+                    group: "",
+                    optional: "no",
+                    ignore: "no",
+                  },
+                ],
+              },
+            ];
+          }
+          else {return [...prev]}
+          
+        });
+  
+        // hightlightText(blocks, selID);
+      }
     }
+      
   };
 
   const hightlightTextSelected = (tmpDiv, selID, range) => {
@@ -260,6 +265,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
       // setData((prev) => {
       //   return [...prev.filter((dt) => dt.isGroup === undefined && dt.selections[0]?.id !== id)]
       // })
+      setTextString("");
       setData((prev) => {
         let idx;
         prev.forEach((dt, index) => {
