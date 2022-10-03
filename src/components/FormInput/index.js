@@ -6,13 +6,13 @@ import GroupTooltip from "../GroupTooltip";
 
 import styles from "./style.module.css";
 
-const FormInput = ({ text = [], setText = () => {} }) => {
-  const textRef = useRef("ABC");
+const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) => {
+  const textRef = useRef();
   const { data, setData } = useContext(StoreContext);
   const { cliText, setCliText } = useContext(StoreContext);
   const { group, setGroup } = useContext(StoreContext);
   // const [text, setText] = useState([]);
-  const [html, setHtml] = useState("");
+  // const [html, setHtml] = useState("");
   const [count, setCount] = useState(0);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [infoPopup, setInfoPopup] = useState({});
