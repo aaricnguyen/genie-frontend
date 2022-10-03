@@ -279,18 +279,24 @@ function App() {
   };
 
   useEffect(() => {
-    if (isEmpty(text)) {
-      setData([]);
-    } else if (isEmpty(html)) {
-      setData([]);
-    }
+    // if (isEmpty(text)) {
+    //   setData([]);
+    // } else if (isEmpty(html)) {
+    //   setData([]);
+    // }
     if (!isEmpty(json)) {
       setIsDisabledReset(false);
     }
-  }, [text, json, html])
+  }, [json])
 
   const handleReset = () => {
+    setHtml("");
+    setText([]);
+    setData([]);
     setJson([]);
+    setPython("");
+    setTestParser("");
+    document.getElementById("editable").textContent = ""
   }
 
   return (
