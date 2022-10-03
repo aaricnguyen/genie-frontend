@@ -281,11 +281,13 @@ function App() {
   useEffect(() => {
     if (isEmpty(text)) {
       setData([]);
+    } else if (isEmpty(html)) {
+      setData([]);
     }
     if (!isEmpty(json)) {
       setIsDisabledReset(false);
     }
-  }, [text, json])
+  }, [text, json, html])
 
   const handleReset = () => {
     setJson([]);
