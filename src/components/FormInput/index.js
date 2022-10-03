@@ -7,7 +7,7 @@ import GroupTooltip from "../GroupTooltip";
 import styles from "./style.module.css";
 
 const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) => {
-  const textRef = useRef("ABC");
+  const textRef = useRef();
   const { data, setData } = useContext(StoreContext);
   const { cliText, setCliText } = useContext(StoreContext);
   const { group, setGroup } = useContext(StoreContext);
