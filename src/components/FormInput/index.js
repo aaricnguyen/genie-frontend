@@ -6,13 +6,13 @@ import GroupTooltip from "../GroupTooltip";
 
 import styles from "./style.module.css";
 
-const FormInput = ({ text = [], setText = () => {} }) => {
+const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) => {
   const textRef = useRef("ABC");
   const { data, setData } = useContext(StoreContext);
   const { cliText, setCliText } = useContext(StoreContext);
   const { group, setGroup } = useContext(StoreContext);
   // const [text, setText] = useState([]);
-  const [html, setHtml] = useState("");
+  // const [html, setHtml] = useState("");
   const [count, setCount] = useState(0);
   const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [infoPopup, setInfoPopup] = useState({});
@@ -93,11 +93,18 @@ const FormInput = ({ text = [], setText = () => {} }) => {
           tmpDiv.setAttribute('id', tmpID);
           tmpDiv.appendChild(docFragment);
           // range.surroundContents(tmpDiv);
-          if (tmpDiv.textContent.includes("\n")) {isMultiLines = true};
-          if (tmpDiv.childElementCount > 0) {isGroup = true};
+          if (tmpDiv.textContent.includes("\n")) {
+            isMultiLines = true
+          };
+          if (tmpDiv.childElementCount > 0) {
+            isGroup = true
+          };
           tmpDiv.childNodes.forEach((cld) => {
             console.log('child node', cld.className)
-            if (cld.className==="groupselect") {return isGrpDuplicated = true}});
+            if (cld.className==="groupselect") {
+              return isGrpDuplicated = true
+            }
+          });
           console.log('isGrpDuplicated', isGrpDuplicated)
           console.log('isMultiLines', isMultiLines)
 

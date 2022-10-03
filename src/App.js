@@ -11,17 +11,21 @@ import styles from "./App.module.css";
 
 function App() {
   const [text, setText] = useState([]);
+  const [html, setHtml] = useState("");
   const [json, setJson] = useState([]);
   const [group, setGroup] = useState([]);
   const [data, setData] = useState([]);
   const [python, setPython] = useState("");
+  const [pythonError, setPythonError] = useState({});
   const [cliText, setCliText] = useState({});
   const [cliJson, setCliJson] = useState({});
   const [testParser, setTestParser] = useState("");
+  const [testParserError, setTestParserError] = useState({});
   const [isDisabledGenerate, setIsDisabledGenerate] = useState(true);
   const [isDisabledTest, setIsDisabledTest] = useState(true);
   const [cliCommand, setCliCommand] = useState("");
   const [loadingTest, setLoadingTest] = useState(false);
+  const [isDisabledReset, setIsDisabledReset] = useState(true);
 
   const myRef = React.createRef();
 
@@ -171,6 +175,7 @@ function App() {
     e.preventDefault();
     setLoadingTest(true)
     setTestParser("");
+    setTestParserError({});
     
     let parserPy = new Blob([JSON.stringify(python)], {
       type: "text/plain",
@@ -190,44 +195,31 @@ function App() {
     formData.append("cli_output_file", cliText, "showversion.txt");
 
     axios({
-        url: `http://10.78.96.78:5001/api/test?cli_command=${cliCommand}`,
-        method: "POST",
-        // headers: {
-        //   "Access-Control-Allow-Origin": "No",
-        //   "Content-Type": "multipart/form-data",
-        // },
-        data: formData,
-      }).then((res)=>{
-        console.log(res.data);
-        setTestParser(JSON.stringify(res.data, undefined, 1))
-      }).finally(() => {
-        setLoadingTest(false);
-      })
+      url: `http://10.78.96.78:5001/api/test?cli_command=${cliCommand}`,
+      method: "POST",
+      data: formData,
+    }).then((res)=>{
+      console.log(res.data);
+      setTestParser(JSON.stringify(res.data, undefined, 1))
+    }).catch((err) => {
+      const { message, name, code } = err;
+      console.log("error: ", err);
+      let testError = {
+        code,
+        message,
+        name
+      }
+      setTestParserError(JSON.stringify(testError, undefined, 1));
+    }).finally(() => {
+      setLoadingTest(false);
+    })
   };
 
-  // const createFilePy = (file) => {
-  //   let parserPy = new Blob([JSON.stringify(file)], {
-  //     type: "text/plain",
-  //   });
-  //   let parserPyFile = new File([parserPy], "parser_file", {
-  //     lastModified: new Date(),
-  //     type: "text/plain",
-  //   });
-
-  //   let formData = new FormData();
-  //   formData.append("parser_output_file", parserPyFile, "parser_N.py");
-  //   return formData;
-  // };
-
-  // useEffect(() => {
-  //   if (python) {
-  //     const formData = createFilePy(python);
-  //   }
-  // }, [python]);
   const generatePy = async (formData) => {
     try {
       setTestParser("");
       setPython("");
+      setPythonError({});
       const { data, status } = await axios({
         url: `http://10.78.96.78:5001/api/parser?cli_command=${cliCommand}`,
         method: "POST",
@@ -240,8 +232,15 @@ function App() {
       if (status === 200) {
         setPython(data);
       }
-    } catch (e) {
-      console.log(e);
+    } catch (err) {
+      console.log("error: ", err);
+      const { message, name, code } = err;
+      let testError = {
+        code,
+        message,
+        name
+      }
+      setPythonError(JSON.stringify(testError, undefined, 1));
     }
   };
   function name(params) {
@@ -278,6 +277,19 @@ function App() {
     const { value } = e.target;
     setCliCommand(value);
   };
+
+  useEffect(() => {
+    if (isEmpty(text)) {
+      setData([]);
+    }
+    if (!isEmpty(json)) {
+      setIsDisabledReset(false);
+    }
+  }, [text, json])
+
+  const handleReset = () => {
+    setJson([]);
+  }
 
   return (
     <BrowserRouter>
@@ -321,8 +333,14 @@ function App() {
             <section className={styles.regexSection}>
               <div className={styles.regexLeft}>
                 <div className={styles.cliOutput}>
-                  <h2 className={styles.regexLeftTitle}>CLI Output</h2>
-                  <FormInput text={text} setText={setText} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <h2 className={styles.regexLeftTitle}>CLI Output</h2>
+                    <button className="btn-reset" onClick={handleReset} disabled={isDisabledReset}>
+                      Reset
+                    </button>
+                  </div>
+                  
+                  <FormInput text={text} setText={setText} html={html} setHtml={setHtml} />
                 </div>
                 <div className="json" style={{ width: "100%", height: "100%" }}>
                   <h2 className="json-title">JSON</h2>
@@ -335,7 +353,14 @@ function App() {
                 </div>
               </div>
               <div className={styles.regexRight}>
-                <Highlight python={python} setPython={setPython} testParser={testParser} loadingTest={loadingTest} />
+                <Highlight 
+                  python={python} 
+                  setPython={setPython} 
+                  testParser={testParser} 
+                  testParserError={testParserError} 
+                  pythonError={pythonError}
+                  loadingTest={loadingTest} 
+                />
               </div>
             </section>
           </div>
