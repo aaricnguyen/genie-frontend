@@ -1,20 +1,16 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { uniqueId, forEach, round } from "lodash";
+import { round } from "lodash";
 import { StoreContext } from "../../context";
 import Tooltip from "../Tooltip";
 import GroupTooltip from "../GroupTooltip";
 
-import styles from "./style.module.css";
+import styles from "./style.module.css";  
 
 const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) => {
   const textRef = useRef();
   const { data, setData } = useContext(StoreContext);
   const { cliText, setCliText } = useContext(StoreContext);
   const { group, setGroup } = useContext(StoreContext);
-  // const [text, setText] = useState([]);
-  // const [html, setHtml] = useState("");
-  const [count, setCount] = useState(0);
-  const [coords, setCoords] = useState({ x: 0, y: 0 });
   const [infoPopup, setInfoPopup] = useState({});
   const [idSelection, setIdSelection] = useState("");
   const [values, setValues] = useState({
@@ -69,6 +65,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
     text.map((val) => (col += `<p>${val}</p>`));
     setHtml(col);
   }, [text]);
+
   const getSeclection = () => {
     let blocks = [];
     let lineNumStart = 0;
@@ -121,17 +118,25 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
           }
         }
   
-        if (isGroup && isGrpDuplicated === undefined) {hightlightGroupSelected(tmpDiv, grpID, range)}
-        else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
-          hightlightTextSelected(tmpDiv, selID, range)}
+        if (isGroup && isGrpDuplicated === undefined) {
+          hightlightGroupSelected(tmpDiv, grpID, range)
+        } else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
+          hightlightTextSelected(tmpDiv, selID, range)
+        }
   
         let start;
         let end;
         let lines;
         let grpChildIDList = [];
+        let groupName = "";
   
         if (isGroup && isGrpDuplicated === undefined) {
-          tmpDiv.childNodes.forEach((chl) => {if (chl.className==="highlight") {grpChildIDList.push(chl.id)}});
+          tmpDiv.childNodes.forEach((chl) => {
+            console.log("check group: ", chl);
+            if (chl.className==="highlight") {
+              grpChildIDList.push(chl.id)
+            }
+          });
           console.log("list of child", grpChildIDList);
         }
         else if (isMultiLines === undefined && isGrpDuplicated === undefined && isGroup === undefined) {
@@ -141,6 +146,21 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
           console.log('text of lines', text[lines - 1]);
           start = round(selectedStr.offsetLeft/charOffsetWidth);
           end = start + window.getSelection().toString().length - 1;
+
+          // console.log("get parent node: ", tmpDiv.parentNode)
+          console.log(selectedStr)
+          if (tmpDiv.parentNode.className === "groupselect") {
+            setData((prev) => {
+              prev.forEach((dt) => {
+                if (dt !== undefined && dt.isGroup && dt.id === tmpDiv.parentNode.id) {
+                  dt.childIDList.push(selID);
+                  groupName = dt.name;
+                }
+              })
+              return prev;
+            })
+          }
+          
           // console.log('selectedStr.offsetLeft ', selectedStr.offsetLeft);
           // console.log('selectedStr.offsetWidth ', selectedStr.offsetWidth);  
         }
@@ -178,7 +198,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
                     type: "",
                     regex: "",
                     desc: "",
-                    group: "",
+                    group: groupName,
                     optional: "no",
                     ignore: "no",
                   },
@@ -503,8 +523,9 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
           return prev;
         });
 
-        data.forEach((dt) => { if (dt !== undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
-          dt.selections[0].group = grpvalues.name
+        data.forEach((dt) => { 
+          if (dt !== undefined && dt.isGroup === undefined && childIDList.includes(dt.selections[0].id)) {
+            dt.selections[0].group = grpvalues.name
           }
         });
       }

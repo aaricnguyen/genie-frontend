@@ -1,5 +1,6 @@
 .tooltip {
   position: absolute;
+  z-index: 100;
   width: 200px;
   height: auto;
   padding: 15px;

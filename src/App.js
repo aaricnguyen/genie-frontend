@@ -220,6 +220,7 @@ function App() {
       setTestParser("");
       setPython("");
       setPythonError({});
+      setTestParserError({});
       const { data, status } = await axios({
         url: `http://10.78.96.78:5001/api/parser?cli_command=${cliCommand}`,
         method: "POST",
