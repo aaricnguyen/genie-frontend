@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect, useRef } from "react";
-import { round } from "lodash";
+import { round, isEqual } from "lodash";
 import { StoreContext } from "../../context";
 import Tooltip from "../Tooltip";
 import GroupTooltip from "../GroupTooltip";
@@ -29,6 +29,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
   const [idGroupSelection, setIdGroupSelection] = useState("");
   const [isDisabled, setIsDisabled] = useState(false);
   const [textString, setTextString] = useState("");
+  const [lastSelected, setLastSelected] = useState({offsetTop: 0, offsetLeft: 0, length: 0})
 
   const el = (sel, par) => (par || document).querySelector(sel);
   const elPopup = el("#tooltip");
@@ -81,11 +82,19 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
     let range;
 
     if (window.getSelection().toString() !== "") {
-      if (textString && textString === window.getSelection().toString()) {
-        console.log("IT'S WORK");
-        return;
-      } else {
-        setTextString(window.getSelection().toString());
+      // if (textString && textString === window.getSelection().toString()) {
+      //   console.log("IT'S WORK");
+      //   return;
+      // } 
+      
+      
+      // if (isEqual(currentSelected, lastSelected) === true) {
+      //   console.log("IT'S WORK");
+      //   return;
+      // }
+      // else {
+        // setTextString(window.getSelection().toString());
+        
         if (window.getSelection) {
           let selectionRange = window.getSelection();
           if (selectionRange.rangeCount > 0) {
@@ -94,7 +103,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
             tmpDiv = document.createElement("span");
             tmpDiv.setAttribute('id', tmpID);
             tmpDiv.appendChild(docFragment);
-            // range.surroundContents(tmpDiv);
+            range.surroundContents(tmpDiv);
             if (tmpDiv.textContent.includes("\n")) {isMultiLines = true};
             if (tmpDiv.childElementCount > 0) {
               isGroup = true
@@ -117,6 +126,15 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
             // console.log('tmpDiv child list', tmpDiv.childNodes)
           }
         }
+        let currentSelected = {offsetTop: tmpDiv.offsetTop, offsetLeft: tmpDiv.offsetLeft, length: window.getSelection().toString().length}
+        console.log("currentSelected: ", currentSelected)
+        console.log("lastSelected: ", lastSelected);
+        if (isEqual(currentSelected, lastSelected) === true) {
+          console.log("IT'S WORK");
+
+          return;
+        }
+        setLastSelected({offsetTop: tmpDiv.offsetTop, offsetLeft: tmpDiv.offsetLeft, length: window.getSelection().toString().length})
   
         if (isGroup && isGrpDuplicated === undefined) {
           hightlightGroupSelected(tmpDiv, grpID, range)
@@ -211,7 +229,7 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
         });
   
         // hightlightText(blocks, selID);
-      }
+      // }
     }
       
   };
@@ -220,14 +238,14 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
     tmpDiv.setAttribute("style", "background-color: pink;");
     tmpDiv.classList.add("highlight");
     tmpDiv.setAttribute("id", selID);
-    range.surroundContents(tmpDiv);
+    // range.surroundContents(tmpDiv);
   };
 
   const hightlightGroupSelected = (tmpDiv, grpID, range) => {
     tmpDiv.setAttribute("style", "background-color: #fce0e5;");
     tmpDiv.classList.add("groupselect");
     tmpDiv.setAttribute("id", grpID);
-    range.surroundContents(tmpDiv);
+    // range.surroundContents(tmpDiv);
   };
 
   const removeHighlightTextSelected = (e, lineNum, id, isGroup = true, group) => {
