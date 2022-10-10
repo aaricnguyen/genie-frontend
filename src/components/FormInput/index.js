@@ -497,8 +497,11 @@ const FormInput = ({ text = [], setText = () => {}, html, setHtml = () => {} }) 
   const handleChangePopup = (e) => {
     const { name, value, id } = e.target;
     setIdSelection(id);
-    setValues({
-      [name]: value,
+    setValues((prev) => {
+      return {
+        ...prev,
+        [name]: value
+      }
     });
     setIsDisabled(true);
   };
