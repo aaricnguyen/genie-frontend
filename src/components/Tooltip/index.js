@@ -101,6 +101,9 @@ const Tooltip =
               <option value="Boolean">Boolean</option>
               <option value="Integer">Integer</option>
               <option value="String">String</option>
+              <option value="List">List</option>
+              <option value="IP Address">IP Address</option>
+              <option value="MAC Address">MAC Address</option>
             </select>
           </div>
 
