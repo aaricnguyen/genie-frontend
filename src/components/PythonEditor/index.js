@@ -2,7 +2,10 @@ import React from "react";
 import AceEditor from "react-ace";
 
 const PythonEditor = (props) => {
-  const { python, handleChangePython = () => {} } = props;
+  const { python, onChange } = props;
+  // function onChange(newValue) {
+  //   console.log("change", newValue);
+  // }
   return (
     <AceEditor 
       {...props}
@@ -10,7 +13,7 @@ const PythonEditor = (props) => {
       showPrintMargin={false}
       editorProps={{ $blockScrolling: true }}
       value={python}
-      onChange={handleChangePython}
+      onChange={onChange}
     />
   )
 }

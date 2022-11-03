@@ -175,7 +175,6 @@ function App() {
     setLoadingTest(true)
     setTestParser("");
     setTestParserError({});
-    
     let parserPy = new Blob([JSON.stringify(python)], {
       type: "text/plain",
     });

@@ -16,11 +16,16 @@ const Highlight =
   testParserError,
   pythonError
 }) => {
-  const handleChangePython = (e) => {
+
+  function handleChangePython(e){
     const { value } = e.target;
+    console.log(value)
     setPython(value);
   }
   
+  function onChange(newValue) {
+    setPython(newValue);
+  }
   return (
     <>
       <div className={styles.parserCode}>
@@ -40,7 +45,7 @@ const Highlight =
           className={styles.parserOutput} 
           theme="monokai" 
           mode="python" 
-          onChange={handleChangePython} 
+          onChange={onChange} 
           python={!isEmpty(pythonError) ? pythonError : python} 
           width="100%"
           height="300px"
