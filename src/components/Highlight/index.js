@@ -1,11 +1,7 @@
 import React from "react";
 import { isEmpty } from "lodash";
-import Helmet from "react-helmet";
 import Loading from '../Loading';
-import PythonEditor from '../PythonEditor';
 import styles from './styles.module.css';
-import "brace/mode/python";
-import "brace/theme/monokai";
 
 const Highlight = 
 ({ 
@@ -41,7 +37,7 @@ const Highlight =
             src="https://cdnjs.cloudflare.com/ajax/libs/brython/3.7.1/brython_stdlib.js"
           />
         </Helmet>
-        <PythonEditor 
+        <PythonEditor
           className={styles.parserOutput} 
           theme="monokai" 
           mode="python" 
@@ -50,6 +46,7 @@ const Highlight =
           width="100%"
           height="300px"
         />
+        <textarea className={styles.parserOutput} onChange={handleChangePython} value={!isEmpty(pythonError) ? pythonError : python}></textarea>
       </div>
       <div className={styles.testParser}>
         <h2 className={styles.testTitle}>Test parser output</h2>
