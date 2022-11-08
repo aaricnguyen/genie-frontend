@@ -84,7 +84,6 @@ function App() {
               if (item.selections[0].start === sel[0].start || addedNames.includes(item.selections[0].name)) {
                 flag = true;
               }
-              
           })
           if (flag === false) {
             ele.selections.push(item.selections);
@@ -176,7 +175,6 @@ function App() {
     setLoadingTest(true)
     setTestParser("");
     setTestParserError({});
-    
     let parserPy = new Blob([JSON.stringify(python)], {
       type: "text/plain",
     });
