@@ -193,7 +193,7 @@ function App() {
     formData.append("cli_output_file", cliText, "showversion.txt");
 
     axios({
-      url: `http://10.78.96.78:5001/api/test?cli_command=${cliCommand}`,
+      url: `http://10.78.96.78:6001/api/test?cli_command=${cliCommand}`,
       method: "POST",
       data: formData,
     }).then((res)=>{
@@ -220,7 +220,7 @@ function App() {
       setPythonError({});
       setTestParserError({});
       const { data, status } = await axios({
-        url: `http://10.78.96.78:5001/api/parser?cli_command=${cliCommand}`,
+        url: `http://10.78.96.78:6001/api/parser?cli_command=${cliCommand}`,
         method: "POST",
         // headers: {
         //   "Access-Control-Allow-Origin": "No",
